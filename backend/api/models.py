@@ -1,4 +1,5 @@
 """Models definition"""
+from email.policy import default
 from django.utils import timezone
 from django.db import models
 
@@ -26,6 +27,7 @@ class Organization(models.Model):
     profile = models.ForeignKey(
         OrganizationProfile, on_delete=models.CASCADE, blank=False
     )
+    bucket_name = models.CharField()
 
 
 class TermsOfServiceVersion(models.Model):
@@ -34,7 +36,8 @@ class TermsOfServiceVersion(models.Model):
     """
 
     version_number = models.IntegerField(blank=False)
-    share_url = models.CharField()
+    share_url = models.URLField()
+    storage_url = models.URLField(blank=False)
     created_at = models.DateTimeField(default=timezone.now())
 
 
@@ -43,8 +46,12 @@ class TermsOfService(models.Model):
     TermsOfService model
     """
 
+    name = models.CharField(blank=False)
     versions = models.ManyToManyField(TermsOfServiceVersion)
     created_at = models.DateTimeField(default=timezone.now())
+    organization = models.ForeignKey(
+        Organization, on_delete=models.CASCADE, blank=False
+    )
 
     def latest_version(self):
         """

@@ -1,11 +1,19 @@
+from django.core.serializers import serialize
 from django.http import Http404
+from django.http.multipartparser import MultiPartParser
+from core.cloud.operate import Operate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import mixins
 from rest_framework import generics
-from .models import Organization, TermsOfService
-from .serializers import OrganizationSerializer, TermsOfServiceSerializer
+from .models import Organization, OrganizationProfile, TermsOfService
+from .serializers import (
+    OrganizationProfileSerializer,
+    OrganizationSerializer,
+    TermsOfServiceSerializer,
+    UploadTermsOfServiceSerializer,
+)
 
 
 class TermsOfServiceListAPIView(APIView):
@@ -22,6 +30,13 @@ class TermsOfServiceListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrganizationProfileAPIView(
+    generics.RetrieveUpdateDestroyAPIView,
+):
+    queryset = OrganizationProfile.objects.all()
+    serializer_class = OrganizationProfileSerializer
 
 
 class TermsOfServiceAPIView(
@@ -52,3 +67,32 @@ class OrganizationListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UploadTermsOfService(APIView):
+    """Upload a terms of service file"""
+
+    def post(self, request, *args, **kwargs):
+        parser_classes = (MultiPartParser,)
+
+        serializer = UploadTermsOfServiceSerializer(data=request.data)
+        if serializer.is_valid():
+            organization_id = self.kwargs.get("id")
+            item_name = serializer.validated_data.pop("name")
+            file = serializer.validated_data.pop("file")
+
+            org = Organization.objects.get(id=organization_id)
+            storage = Operate(org.profile.name)
+
+            bucket_name = (
+                org.bucket_name
+                if org.bucket_name != ""
+                else storage.create_bucket()
+            )
+
+            uploaded = storage.upload_file(
+                bucket_name=bucket_name, item_name=item_name, file=file
+            )
+            return Response(
+                {f"{item_name}": "Uploaded" if uploaded else "Upload failed"}
+            )

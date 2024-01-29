@@ -1,3 +1,4 @@
+from wsgiref import validate
 from rest_framework import serializers
 from .models import (
     OrganizationProfile,
@@ -11,7 +12,7 @@ class OrganizationProfileSerializer(serializers.ModelSerializer):
     """Serializer for organization profile model"""
 
     class Meta:
-        fields = "__all__"
+        fields = ["id", "name", "email"]
         model = OrganizationProfile
 
 
@@ -19,9 +20,10 @@ class OrganizationSerializer(serializers.ModelSerializer):
     """Serializer for organization model"""
 
     profile = OrganizationProfileSerializer()
+    bucket_name = serializers.CharField(read_only=True)
 
     class Meta:
-        fields = ["id", "username", "profile"]
+        fields = ["id", "username", "profile", "bucket_name"]
         model = Organization
 
     def create(self, validated_data):
@@ -32,44 +34,36 @@ class OrganizationSerializer(serializers.ModelSerializer):
         )
         return organization
 
-    def update(self, validated_data):
-        orgId = validated_data.pop("id")
-        profile_data = validated_data.pop("profile")
-
-        updatedProfile = OrganizationProfile.objects.filter(
-            id=profile_data["id"]
-        ).update(**profile_data)
-
-        organization = Organization.objects.filter(id=orgId).update(
-            **validated_data, profile=updatedProfile
-        )
-        return organization
-
 
 class TermsOfServiceVersionSerializer(serializers.ModelSerializer):
     """Serializer for terms of service version model"""
 
     class Meta:
-        fields = ["version_number", "share_url", "id"]
+        fields = ["id", "version_number", "storage_url", "share_url"]
         model = TermsOfServiceVersion
 
 
 class TermsOfServiceSerializer(serializers.ModelSerializer):
-    """Serializer for organization model"""
+    """Serializer for terms of service model"""
 
     versions = TermsOfServiceVersionSerializer(many=True)
+    organization = OrganizationSerializer()
 
     class Meta:
-        fields = ["versions", "id"]
+        fields = ["id", "name", "organization", "versions"]
         model = TermsOfService
 
     def create(self, validated_data):
         versions = validated_data.pop("versions")
+        orgId = validated_data.pop("organization")
         newVersions = map(
             lambda version: TermsOfServiceVersion.objects.create(**version),
             versions,
         )
-        termsOfService = TermsOfService.objects.create()
+        organization = Organization.objects.get(id=orgId)
+        termsOfService = TermsOfService.objects.create(
+            **validated_data, organization=organization
+        )
         termsOfService.versions.set(newVersions)
         return termsOfService
 
@@ -82,3 +76,8 @@ class TermsOfServiceSerializer(serializers.ModelSerializer):
             )
         tos = TermsOfService.objects.get(id=tosId)
         return tos
+
+
+class UploadTermsOfServiceSerializer(serializers.Serializer):
+    file = serializers.FileField(allow_empty_file=False)
+    name = serializers.CharField()
