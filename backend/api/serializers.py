@@ -39,33 +39,24 @@ class TermsOfServiceVersionSerializer(serializers.ModelSerializer):
     """Serializer for terms of service version model"""
 
     class Meta:
-        fields = ["id", "version_number", "storage_url", "share_url"]
+        fields = ["id", "version_number", "storage_path", "share_url"]
         model = TermsOfServiceVersion
 
 
 class TermsOfServiceSerializer(serializers.ModelSerializer):
     """Serializer for terms of service model"""
 
-    versions = TermsOfServiceVersionSerializer(many=True)
-    organization = OrganizationSerializer()
+    versions = TermsOfServiceVersionSerializer(many=True, read_only=True)
+    organization = OrganizationSerializer(read_only=True)
+    organization_id = serializers.PrimaryKeyRelatedField(
+        queryset=Organization.objects.all(),
+        source="organization",
+        write_only=True,
+    )
 
     class Meta:
-        fields = ["id", "name", "organization", "versions"]
+        fields = ["name", "versions", "organization", "id", "organization_id"]
         model = TermsOfService
-
-    def create(self, validated_data):
-        versions = validated_data.pop("versions")
-        orgId = validated_data.pop("organization")
-        newVersions = map(
-            lambda version: TermsOfServiceVersion.objects.create(**version),
-            versions,
-        )
-        organization = Organization.objects.get(id=orgId)
-        termsOfService = TermsOfService.objects.create(
-            **validated_data, organization=organization
-        )
-        termsOfService.versions.set(newVersions)
-        return termsOfService
 
     def update(self, validated_data):
         versions = validated_data.pop("versions")

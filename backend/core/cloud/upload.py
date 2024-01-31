@@ -10,8 +10,6 @@ def upload_to_cloud(cos, bucket_name, item_name, file):
             return "Uploaded"
         return ""
     except ClientError as ce:
-        raise ce
         return f"Error on upload: {ce}"
     except Exception as e:
-        raise e
         return f"Error occurred: {e}"

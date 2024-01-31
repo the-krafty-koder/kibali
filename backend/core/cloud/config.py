@@ -23,5 +23,15 @@ def run_config():
         config=Config(signature_version="oauth"),
         endpoint_url=COS_API_ENDPOINT,
     )
-    print(cos)
+    return cos
+
+
+def create_client():
+    cos = ibm_boto3.client(
+        "s3",
+        ibm_api_key_id=COS_API_KEY,
+        ibm_service_instance_id=COS_API_INSTANCE_ID,
+        config=Config(signature_version="oauth"),
+        endpoint_url=COS_API_ENDPOINT,
+    )
     return cos

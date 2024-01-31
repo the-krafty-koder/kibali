@@ -2,7 +2,7 @@ import pytest
 import django.utils.timezone
 from mock import patch
 from datetime import datetime
-from ..models import Organization, OrganizationProfile
+from ..models import Organization, OrganizationProfile, TermsOfService
 from ..serializers import (
     OrganizationSerializer,
     OrganizationProfileSerializer,
@@ -43,9 +43,10 @@ class TestSerializer:
         if serializedOrg.is_valid():
             serializedOrg.save()
             assert serializedOrg.data == {
+                "id": 1,
                 "username": "Org",
                 "profile": OrderedDict(
-                    {"name": "OP2", "email": "op2@gmail.com"}
+                    {"id": 2, "name": "OP2", "email": "op2@gmail.com"}
                 ),
                 "bucket_name": "",
             }
@@ -68,30 +69,24 @@ class TestSerializer:
             organization = Organization.objects.get(username="Org")
 
             termsOfService = TermsOfServiceSerializer(
-                data={
-                    "versions": [
-                        {
-                            "version_number": 1,
-                            "share_url": "https://share.url",
-                            "storage_url": "https://storage.url",
-                        }
-                    ],
-                    "name": "TOS Org",
-                    "organization": organization.id,
-                }
+                data={"name": "TOS Org", "organization_id": organization.id}
             )
             if termsOfService.is_valid():
                 termsOfService.save()
-                assert termsOfService.data == {
+
+                tos = TermsOfService.objects.get(name="TOS Org")
+                assert TermsOfServiceSerializer(instance=tos).data == {
+                    "id": 1,
                     "name": "TOS Org",
-                    "organization": 2,
-                    "versions": [
-                        OrderedDict(
-                            {
-                                "version_number": 1,
-                                "storage_url": "https://storage.url",
-                                "share_url": "https://share.url",
-                            }
-                        )
-                    ],
+                    "organization": {
+                        "id": 2,
+                        "username": "Org",
+                        "profile": {
+                            "id": 3,
+                            "name": "OP2",
+                            "email": "op2@gmail.com",
+                        },
+                        "bucket_name": "",
+                    },
+                    "versions": [],
                 }
