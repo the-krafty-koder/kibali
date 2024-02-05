@@ -2,23 +2,22 @@ import pytest
 import django.utils.timezone
 from mock import patch
 from datetime import datetime
-from ..models import Organization, OrganizationProfile, TermsOfService
+from ..models import Organization, TermsOfService
 from ..serializers import (
     OrganizationSerializer,
-    OrganizationProfileSerializer,
     TermsOfServiceSerializer,
 )
 from collections import OrderedDict
 
 
-@pytest.fixture
-def setup():
-    op = OrganizationProfile.objects.create(name="OP", email="op@gmail.com")
-    OrganizationProfile.objects.filter(email="op@gmail.com").update(
-        name="op2@gmail.com"
-    )
-    ops = OrganizationProfileSerializer(op)
-    return op, ops.data
+# @pytest.fixture
+# def setup():
+#     op = OrganizationProfile.objects.create(name="OP", email="op@gmail.com")
+#     OrganizationProfile.objects.filter(email="op@gmail.com").update(
+#         name="op2@gmail.com"
+#     )
+#     ops = OrganizationProfileSerializer(op)
+#     return op, ops.data
 
 
 @patch("api.models.timezone.now", "2024-01-24T11:58:15.221040Z")
@@ -32,22 +31,24 @@ class TestSerializer:
     def test_organization_creation_and_update(self):
         serializedOrg = OrganizationSerializer(
             data={
-                "username": "Org",
-                "password": "Org254",
-                "profile": {
-                    "name": "OP2",
+                "user": {
+                    "username": "OP2",
                     "email": "op2@gmail.com",
+                    "password": "op254@me",
+                    "first_name": "Op Limited",
                 },
             }
         )
         if serializedOrg.is_valid():
-            serializedOrg.save()
-            assert serializedOrg.data == {
+            savedOrg = serializedOrg.save()
+            assert OrganizationSerializer(instance=savedOrg).data == {
                 "id": 1,
-                "username": "Org",
-                "profile": OrderedDict(
-                    {"id": 2, "name": "OP2", "email": "op2@gmail.com"}
-                ),
+                "user": {
+                    "id": 1,
+                    "username": "OP2",
+                    "email": "op2@gmail.com",
+                    "first_name": "Op Limited",
+                },
                 "bucket_name": "",
             }
 

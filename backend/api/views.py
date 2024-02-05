@@ -9,14 +9,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 from .models import (
     Organization,
-    OrganizationProfile,
     TermsOfService,
     TermsOfServiceVersion,
 )
 from .serializers import (
-    OrganizationProfileSerializer,
     OrganizationSerializer,
     TermsOfServiceSerializer,
     TermsOfServiceVersionSerializer,
@@ -26,6 +25,8 @@ from .serializers import (
 
 class TermsOfServiceListAPIView(APIView):
     """List all terms of service or create a new one"""
+
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         tosList = TermsOfService.objects.all()
@@ -40,18 +41,12 @@ class TermsOfServiceListAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class OrganizationProfileAPIView(
-    generics.RetrieveUpdateDestroyAPIView,
-):
-    queryset = OrganizationProfile.objects.all()
-    serializer_class = OrganizationProfileSerializer
-
-
 class TermsOfServiceVersionAPIView(
     generics.RetrieveUpdateDestroyAPIView,
 ):
     queryset = TermsOfServiceVersion.objects.all()
     serializer_class = TermsOfServiceVersionSerializer
+    permission_classes = (IsAuthenticated,)
 
     def delete(self, request, pk):
         bucket_name = request.data.pop("bucket-name")
@@ -72,6 +67,7 @@ class TermsOfServiceAPIView(
 ):
     queryset = TermsOfService.objects.all()
     serializer_class = TermsOfServiceSerializer
+    permission_classes = (IsAuthenticated,)
 
     def delete(self, request, pk):
         terms_of_service = TermsOfService.objects.get(id=pk)
@@ -89,12 +85,16 @@ class TermsOfServiceAPIView(
 class OrganizationAPIView(
     generics.RetrieveUpdateDestroyAPIView,
 ):
+    permission_classes = (IsAuthenticated,)
+
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
 
 
 class OrganizationListAPIView(APIView):
     """List all organizations or create a new one"""
+
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         orgList = Organization.objects.all()
@@ -111,6 +111,8 @@ class OrganizationListAPIView(APIView):
 
 class UploadTermsOfService(APIView):
     """Upload a terms of service file"""
+
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         parser_classes = (MultiPartParser,)

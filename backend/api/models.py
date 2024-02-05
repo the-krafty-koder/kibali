@@ -1,5 +1,6 @@
 """Models definition"""
 from email.policy import default
+from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
 
@@ -11,25 +12,12 @@ from core.helpers.format_name import format_name
 datetimeFormat = "%Y-%m-%d %H:%M:%S"
 
 
-class OrganizationProfile(models.Model):
-    """
-    OrganizationProfile model
-    """
-
-    name = models.CharField(max_length=50, unique=True)
-    email = models.EmailField(max_length=50, unique=True)
-
-
 class Organization(models.Model):
     """
     Organization Model
     """
 
-    username = models.CharField(unique=True, blank=False)
-    password = models.TextField(unique=True, blank=False)
-    profile = models.ForeignKey(
-        OrganizationProfile, on_delete=models.CASCADE, blank=False
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=False)
     bucket_name = models.CharField()
 
 
