@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import (
     Organization,
+    OrganizationUser,
     TermsOfServiceVersion,
     TermsOfService,
 )
@@ -11,7 +12,7 @@ from django.contrib.auth.password_validation import validate_password
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Serializer for user model"""
+    """Serializer for organization user model"""
 
     password = serializers.CharField(
         write_only=True, required=True, validators=[validate_password]
@@ -25,11 +26,11 @@ class UserSerializer(serializers.ModelSerializer):
             "password",
             "first_name",
         ]
-        model = User
+        model = OrganizationUser
 
     def create(self, validated_data):
         password = validated_data.pop("password")
-        user = User.objects.create(**validated_data)
+        user = OrganizationUser.objects.create(**validated_data)
 
         user.set_password(password)
         user.save()
@@ -56,7 +57,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
     bucket_name = serializers.CharField(read_only=True)
 
     class Meta:
-        fields = ["id", "user", "bucket_name"]
+        fields = ["id", "user", "bucket_name", "phone_number", "country"]
         model = Organization
 
     def create(self, validated_data):

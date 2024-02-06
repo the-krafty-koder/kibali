@@ -1,8 +1,10 @@
 """Models definition"""
 from email.policy import default
-from django.contrib.auth.models import User
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.models import AbstractUser, User
 from django.utils import timezone
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from core.helpers.format_name import format_name
 
@@ -12,13 +14,23 @@ from core.helpers.format_name import format_name
 datetimeFormat = "%Y-%m-%d %H:%M:%S"
 
 
+class OrganizationUser(AbstractUser):
+    email = models.EmailField(_("email address"), unique=True)
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name", "username", "password"]
+
+
 class Organization(models.Model):
     """
     Organization Model
     """
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=False)
+    user = models.OneToOneField(
+        OrganizationUser, on_delete=models.CASCADE, blank=False
+    )
     bucket_name = models.CharField()
+    phone_number = models.CharField()
+    country = models.CharField()
 
 
 class TermsOfServiceVersion(models.Model):

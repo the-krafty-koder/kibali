@@ -45,9 +45,11 @@ INSTALLED_APPS = [
     "api",
     "rest_framework",
     "rest_framework.authtoken",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -94,6 +96,8 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+# AUTH_USER_MODEL = "api.OrganizationUser"
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -137,3 +141,6 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",  # Add this line
     ],
 }
+
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = ["http://127.0.0.1:3000"]

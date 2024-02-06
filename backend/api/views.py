@@ -94,8 +94,6 @@ class OrganizationAPIView(
 class OrganizationListAPIView(APIView):
     """List all organizations or create a new one"""
 
-    permission_classes = (IsAuthenticated,)
-
     def get(self, request):
         orgList = Organization.objects.all()
         serializer = OrganizationSerializer(orgList, many=True)
