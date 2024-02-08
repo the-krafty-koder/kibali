@@ -1,0 +1,15 @@
+.header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 23vh;
+}
+
+.featuresContainer {
+  background-color: white;
+  padding: 5vw;
+  padding-top: 20vh;
+  min-height: 100vh;
+}

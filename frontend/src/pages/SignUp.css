@@ -1,0 +1,25 @@
+.authContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.tagLine {
+  color: rgb(0, 0, 0, 0.6);
+}
+
+.wrapper {
+  max-width: 45vw;
+  padding: 25px;
+}
+
+.signUpHeader {
+  display: flex;
+  align-items: center;
+}
+
+.loginLink {
+  text-align: center;
+}

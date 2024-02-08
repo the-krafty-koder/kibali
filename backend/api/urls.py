@@ -2,7 +2,6 @@ from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 from .views import (
     OrganizationAPIView,
-    # OrganizationProfileAPIView,
     OrganizationListAPIView,
     TermsOfServiceAPIView,
     TermsOfServiceListAPIView,
@@ -21,7 +20,7 @@ urlpatterns = [
     path("terms-of-service/<int:pk>", TermsOfServiceAPIView.as_view()),
     path("terms-of-service/<int:id>/upload", UploadTermsOfService.as_view()),
     path(
-        "auth-token",
+        "login",
         obtain_auth_token,
     ),
 ]

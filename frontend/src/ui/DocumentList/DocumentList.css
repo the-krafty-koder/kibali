@@ -1,0 +1,14 @@
+.documentList {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-left: 0;
+  border-bottom: solid 1px rgb(28, 28, 28, 0.1);
+}
+
+.date {
+  color: rgb(28, 28, 28, 0.4);
+}
+
+.icon {
+  background-color: "#FFA985";
+}

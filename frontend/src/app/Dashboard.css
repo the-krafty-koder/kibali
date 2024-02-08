@@ -1,0 +1,48 @@
+.headers,
+.analytics-header {
+  padding-bottom: 15px;
+  border-bottom: solid 2px rgb(28, 28, 28, 0.9);
+  color: rgb(28, 28, 28, 0.9);
+}
+
+.analytics-header {
+  border-bottom-width: 50%;
+  padding: 15px;
+  border-bottom: solid 5px #350182;
+}
+.container,
+.uploadContainer,
+.socials,
+.share {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.socials {
+  border-top: solid 2px rgb(28, 28, 28, 0.9);
+  border-top-width: 50%;
+  margin-top: 15px;
+  padding-top: 10px;
+}
+
+.dividerContainer {
+  display: flex;
+  align-items: flex-start;
+}
+.divider {
+  border-right: solid 1px rgb(28, 28, 28, 0.1);
+  height: 90%;
+  margin-top: auto;
+  margin-left: 30px;
+}
+
+.uploadContainer {
+  margin-bottom: 30px;
+}
+.upload {
+  background-color: "#350182";
+  text-align: center;
+  min-height: 50px;
+  border: solid 2px;
+}
