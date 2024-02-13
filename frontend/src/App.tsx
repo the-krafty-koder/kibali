@@ -5,8 +5,10 @@ import { Grid, ThemeProvider, createTheme } from "@mui/material";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
-import Documents from "./app/Documents";
+import TermsOfServiceList from "./app/TermsOfServiceLIst";
 import Dashboard from "./app/Dashboard";
+import TermsOfService from "./app/TermsOfService";
+import TermsOfServiceVersion from "./app/TermsOfServiceVersion";
 
 const theme = createTheme({
   typography: {
@@ -14,7 +16,16 @@ const theme = createTheme({
   },
   palette: {
     background: {
-      default: "#f7f5fa",
+      default: "#fcfcfc",
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        },
+      },
     },
   },
 });
@@ -28,7 +39,19 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/app/dashboard" element={<Dashboard />} />
-          <Route path="/app/documents" element={<Documents />} />
+          <Route
+            path="/app/terms-of-service"
+            element={<TermsOfServiceList />}
+          />
+          <Route
+            path="/app/terms-of-service/:tosId"
+            element={<TermsOfService />}
+          />
+          <Route
+            path="/app/terms-of-service/:tosId/versions/:versionId"
+            element={<TermsOfServiceVersion />}
+          />
+
           {/* <Route path="/app/analytics" element={<Analytics />}
           <Route path="/app/profile" element={<Profile />} /> */}
         </Routes>

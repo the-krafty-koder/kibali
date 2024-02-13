@@ -1,0 +1,30 @@
+.thumbnail {
+  height: 260px;
+  width: 290px;
+  font-family: "Sen";
+}
+
+.content {
+  display: flex;
+  overflow: hidden;
+}
+
+.content {
+  background-color: #f7f5fa;
+  justify-content: center;
+}
+
+.details {
+  padding: 10px;
+}
+
+.thumbnailImage {
+  height: 220px;
+  width: 180px;
+  margin-bottom: -80px;
+}
+
+.created {
+  color: rgb(0, 0, 0, 0.4);
+  font-size: 14px;
+}

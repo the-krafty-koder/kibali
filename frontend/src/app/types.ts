@@ -14,15 +14,17 @@ export type Organization = {
 };
 
 export type TermsOfServiceVersion = {
-  id: string;
+  id: number;
   versionNumber: number;
   storagePath: string;
   url: string;
 };
 
 export type TermsOfService = {
+  id: number;
   name: string;
   versions: TermsOfServiceVersion[];
   createdAt: string;
   organization?: Organization | null;
+  active?: boolean;
 };

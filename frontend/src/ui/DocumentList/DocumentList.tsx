@@ -5,48 +5,51 @@ import {
   Button,
   IconButton,
   Grid,
+  Box,
+  Link,
 } from "@mui/material";
-import { TermsOfService } from "../../app/types";
+import { TermsOfService, TermsOfServiceVersion } from "../../app/types";
 import ArticleSharpIcon from "@mui/icons-material/ArticleSharp";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import "./DocumentList.css";
+import { ReactNode } from "react";
 
 interface Props {
-  termsOfService: TermsOfService;
+  children: ReactNode;
+  link: string;
 }
 
-const DocumentList = ({ termsOfService }: Props) => {
+const DocumentList = ({ children, link }: Props) => {
   return (
-    <Stack
-      className="documentList"
-      direction="row"
-      justifyContent="space-evenly"
-      alignItems="center"
-      component={Grid}
-    >
-      <Grid item xs={2}>
-        <ArticleSharpIcon
-          className="icon"
-          fontSize="large"
-          sx={{ color: "grey" }}
-        />
-      </Grid>
-      <Grid item xs={6}>
-        <Stack spacing={1}>
-          <Typography variant="subtitle1">{termsOfService.name}</Typography>
-          <Typography className="date">{termsOfService.createdAt}</Typography>
-        </Stack>
-      </Grid>
-      <Grid item xs={2}>
-        <Chip label="33 MB" />
-      </Grid>
-      <Grid item xs={2}>
-        <IconButton>
-          {" "}
-          <MoreVertIcon />
-        </IconButton>
-      </Grid>
-    </Stack>
+    <Box component={Link} href={link} underline="none">
+      <Stack
+        className="documentList"
+        direction="row"
+        justifyContent="space-evenly"
+        alignItems="center"
+        component={Grid}
+      >
+        <Grid item xs={2}>
+          <ArticleSharpIcon
+            className="icon"
+            fontSize="large"
+            sx={{ color: "grey" }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          {children}
+        </Grid>
+        <Grid item xs={2}>
+          <Chip label="33 MB" />
+        </Grid>
+        <Grid item xs={2}>
+          <IconButton>
+            {" "}
+            <MoreVertIcon />
+          </IconButton>
+        </Grid>
+      </Stack>
+    </Box>
   );
 };
 

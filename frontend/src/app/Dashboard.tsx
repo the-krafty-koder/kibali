@@ -21,11 +21,12 @@ import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 const Dashboard = () => {
   const [termsOfServices, setTermsOfServices] = useState<TermsOfService[]>([
     {
+      id: 1,
       name: "Website Terms of Service Final Version",
       createdAt: "March 10th - 5.35pm",
       versions: [
         {
-          id: "12345566",
+          id: 1,
           versionNumber: 1,
           storagePath: "/path1",
           url: "https:boto/path1",
@@ -33,11 +34,12 @@ const Dashboard = () => {
       ],
     },
     {
+      id: 2,
       name: "Website Terms of Service First Draft",
       createdAt: "March 10th - 5.35pm",
       versions: [
         {
-          id: "12345566",
+          id: 1,
           versionNumber: 1,
           storagePath: "/path1",
           url: "https:boto/path1",
@@ -45,11 +47,12 @@ const Dashboard = () => {
       ],
     },
     {
+      id: 3,
       name: "API Terms of Service Final",
       createdAt: "March 10th - 5.35pm",
       versions: [
         {
-          id: "12345566",
+          id: 1,
           versionNumber: 1,
           storagePath: "/path1",
           url: "https:boto/path1",
@@ -57,11 +60,12 @@ const Dashboard = () => {
       ],
     },
     {
+      id: 4,
       name: "API Terms of Service Initial Draft",
       createdAt: "March 10th - 5.35pm",
       versions: [
         {
-          id: "12345566",
+          id: 1,
           versionNumber: 1,
           storagePath: "/path1",
           url: "https:boto/path1",
@@ -120,12 +124,23 @@ const Dashboard = () => {
             <b>TERMS OF SERVICE</b>
           </Typography>
           <div>
-            {termsOfServices.map((termsOfService) => (
-              <DocumentList
-                key={termsOfService.name}
-                termsOfService={termsOfService}
-              />
-            ))}
+            {termsOfServices.map((termsOfService) => {
+              return (
+                <DocumentList
+                  key={termsOfService.name}
+                  link={`/app/terms-of-service/${termsOfService.id}`}
+                >
+                  <Stack spacing={1}>
+                    <Typography variant="subtitle1">
+                      {termsOfService.name}
+                    </Typography>
+                    <Typography className="date">
+                      {termsOfService.createdAt}
+                    </Typography>
+                  </Stack>
+                </DocumentList>
+              );
+            })}
           </div>
         </Grid>
         <Grid item xs={1} className="dividerContainer">
@@ -158,7 +173,7 @@ const Dashboard = () => {
             <Card
               sx={{
                 padding: "10px",
-                background: "#F4F1F8",
+                background: "#f7f5fa",
                 width: "50%",
               }}
             >

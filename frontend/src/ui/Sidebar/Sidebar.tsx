@@ -192,7 +192,7 @@ const Sidebar = ({ children }: Props) => {
           </ListItem>
           <ListItem key="Documents" disablePadding sx={{ display: "block" }}>
             <ListItemButton
-              href="/app/documents"
+              href="/app/terms-of-service"
               sx={{
                 minHeight: 48,
                 justifyContent: open ? "initial" : "center",
