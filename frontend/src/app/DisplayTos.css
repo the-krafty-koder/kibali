@@ -1,0 +1,51 @@
+.topHeader {
+  background: #350182;
+  padding-left: 35px;
+  display: flex;
+  align-items: center;
+}
+
+.bottomFooter {
+  background-color: #f7f5fa;
+  padding-left: 35px;
+  height: 100px;
+  margin-top: 40px;
+}
+
+.organizationLogo,
+.hostLogo {
+  height: 100px;
+  width: 100px;
+}
+
+.organizationLogo > img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.hostLogo > img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.hostLogo {
+  margin-left: auto;
+  padding-right: 35px;
+  align-items: center;
+}
+
+.tosContentWrapper {
+  background: "white";
+  padding: 20px;
+}
+
+.tosContent {
+  border: dotted 1px rgb(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.textContent {
+  margin-top: 60px;
+}

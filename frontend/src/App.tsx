@@ -6,13 +6,26 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import TermsOfServiceList from "./app/TermsOfServiceLIst";
-import Dashboard from "./app/Dashboard";
+import Dashboard from "./app/Dashboard/Dashboard";
 import TermsOfService from "./app/TermsOfService";
 import TermsOfServiceVersion from "./app/TermsOfServiceVersion";
+import Share from "./app/Share";
+import DisplayTos from "./app/DisplayTos";
+import Profile from "./app/Profile";
+import useStore from "./store/store";
 
 const theme = createTheme({
   typography: {
     fontFamily: "Sen",
+    h4: {
+      color: "rgb(31, 31, 31, .9)",
+    },
+    h2: {
+      fontFamily: "Outfit",
+    },
+    h5: {
+      fontFamily: "Outfit",
+    },
   },
   palette: {
     background: {
@@ -27,10 +40,25 @@ const theme = createTheme({
         },
       },
     },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: `#350182`,
+          },
+          "&.Mui-focused": {
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#350182",
+            },
+          },
+        },
+      },
+    },
   },
 });
 
 function App() {
+  const store = useStore();
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
@@ -51,6 +79,10 @@ function App() {
             path="/app/terms-of-service/:tosId/versions/:versionId"
             element={<TermsOfServiceVersion />}
           />
+          <Route path="/app/share" element={<Share />} />
+          <Route path="/app/profile" element={<Profile />} />
+
+          <Route path="/orgName/:termsOfServiceName" element={<DisplayTos />} />
 
           {/* <Route path="/app/analytics" element={<Analytics />}
           <Route path="/app/profile" element={<Profile />} /> */}

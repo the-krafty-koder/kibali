@@ -10,7 +10,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
@@ -24,6 +23,7 @@ import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 import { Stack } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
+import { Share } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -67,7 +67,7 @@ const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })<AppBarProps>(({ theme, open }) => ({
   fontFamily: "Sen",
-  borderBottom: "solid 1px black",
+  // borderBottom: "solid 1px black",
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
@@ -81,7 +81,8 @@ const AppBar = styled(MuiAppBar, {
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
-  color: "black",
+  color: "rgba(53, 1, 130, .7)",
+  // backgroundColor: "#350182",
 }));
 
 const Drawer = styled(MuiDrawer, {
@@ -145,8 +146,8 @@ const Sidebar = ({ children }: Props) => {
             />
           </IconButton>
 
-          <Typography variant="h5" sx={{ fontFamily: "Montserrat" }}>
-            <b>Kibali</b>
+          <Typography variant="h5" sx={{ fontFamily: "Outfit" }}>
+            <b>lilac</b>
           </Typography>
           <Avatar
             className="avatar"
@@ -214,9 +215,9 @@ const Sidebar = ({ children }: Props) => {
               />
             </ListItemButton>
           </ListItem>
-          <ListItem key="Analytics" disablePadding sx={{ display: "block" }}>
+          <ListItem key="Share" disablePadding sx={{ display: "block" }}>
             <ListItemButton
-              href="/app/analytics"
+              href="/app/share"
               sx={{
                 minHeight: 48,
                 justifyContent: open ? "initial" : "center",
@@ -230,12 +231,9 @@ const Sidebar = ({ children }: Props) => {
                   justifyContent: "center",
                 }}
               >
-                <AnalyticsIcon />
+                <Share />
               </ListItemIcon>
-              <ListItemText
-                primary="Analytics"
-                sx={{ opacity: open ? 1 : 0 }}
-              />
+              <ListItemText primary="Share" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>

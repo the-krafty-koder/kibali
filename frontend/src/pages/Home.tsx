@@ -11,7 +11,12 @@ const Landing = () => {
       <Grid container style={styles.descriptions}>
         <Grid item xs={6}>
           <Box style={styles.description}>
-            <Typography variant="h2" style={styles.tagLine}>
+            <Typography
+              variant="h2"
+              style={styles.tagLine}
+              fontWeight="450"
+              color="rgb(0,0,0,.9)"
+            >
               Terms Redefined, <br />
               Service Refined
             </Typography>

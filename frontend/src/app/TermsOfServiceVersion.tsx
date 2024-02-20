@@ -29,11 +29,15 @@ const TermsOfServiceVersionDetails = () => {
     <Sidebar>
       <Stack spacing={3}>
         <Breadcrumbs>
-          <Link underline="hover" href="/terms-of-service">
+          <Link underline="hover" href="/app/terms-of-service">
             {" "}
             Terms of Service{" "}
           </Link>
-          <Link underline="hover" onClick={() => navigate(-1)}>
+          <Link
+            underline="hover"
+            onClick={() => navigate(-1)}
+            sx={{ cursor: "pointer" }}
+          >
             {" "}
             Versions{" "}
           </Link>

@@ -12,9 +12,10 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { startButton as buttonStyle } from "./Navigation.css";
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import WavingHandIcon from "@mui/icons-material/WavingHand";
 import { ZodError, z } from "zod";
+import useStore from "../store/store";
 
 const LoginSchema = z.object({
   email: z.string().email(),
@@ -34,6 +35,10 @@ const Login = () => {
     email: [],
     password: [],
   });
+
+  const navigate = useNavigate();
+
+  const { setCredentials } = useStore();
 
   const handleSubmit = async () => {
     const endpoint = `${process.env.REACT_APP_API_ENDPOINT}/login`;
@@ -55,7 +60,11 @@ const Login = () => {
     }).then(async (response) => {
       if (response.status === 200) {
         const { token } = await response.json();
-        localStorage.setItem("kibaliToken", token);
+        setCredentials({
+          token,
+          email: values.email,
+        });
+        return navigate("/app/dashboard");
       }
     });
   };
@@ -67,7 +76,7 @@ const Login = () => {
         backgroundColor: "#f7f5fa",
       }}
     >
-      <Card className="wrapper" component={Stack} spacing={3}>
+      <Card className="loginWrapper" component={Stack} spacing={3}>
         <Stack spacing={1} className="loginHeader">
           <ClearAllIcon
             className="LoginLogo"

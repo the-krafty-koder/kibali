@@ -91,7 +91,7 @@ const SignUp = () => {
         backgroundColor: "#f7f5fa",
       }}
     >
-      <Card className="wrapper" component={Stack} spacing={3}>
+      <Card className="signupWrapper" component={Stack} spacing={3}>
         <Stack spacing={1} className="signUpHeader">
           <ClearAllIcon
             className="signUpLogo"

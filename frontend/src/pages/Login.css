@@ -1,7 +1,12 @@
-.wrapper,
+.loginWrapper,
 .loginHeader {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.loginWrapper {
+  max-width: 45vw;
+  padding: 25px;
 }

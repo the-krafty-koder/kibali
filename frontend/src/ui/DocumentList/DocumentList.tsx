@@ -17,18 +17,14 @@ import { ReactNode } from "react";
 interface Props {
   children: ReactNode;
   link: string;
+  firstAction?: ReactNode;
+  secondAction?: ReactNode;
 }
 
-const DocumentList = ({ children, link }: Props) => {
+const DocumentList = ({ children, link, firstAction, secondAction }: Props) => {
   return (
-    <Box component={Link} href={link} underline="none">
-      <Stack
-        className="documentList"
-        direction="row"
-        justifyContent="space-evenly"
-        alignItems="center"
-        component={Grid}
-      >
+    <Box component={Link} href={link} underline="none" color="black">
+      <Grid container className="documentList">
         <Grid item xs={2}>
           <ArticleSharpIcon
             className="icon"
@@ -40,15 +36,12 @@ const DocumentList = ({ children, link }: Props) => {
           {children}
         </Grid>
         <Grid item xs={2}>
-          <Chip label="33 MB" />
+          {firstAction}
         </Grid>
         <Grid item xs={2}>
-          <IconButton>
-            {" "}
-            <MoreVertIcon />
-          </IconButton>
+          {secondAction}
         </Grid>
-      </Stack>
+      </Grid>
     </Box>
   );
 };

@@ -1,13 +1,12 @@
 import { Grid, Stack, Typography } from "@mui/material";
 import Sidebar from "../ui/Sidebar/Sidebar";
 import TosThumbnail from "../ui/TosThumbnail/TosThumbnail";
-import { useParams } from "react-router-dom";
 
 const TermsOfServiceList = () => {
   const tos = {
     id: 1,
     name: "Terms of Service Final Version",
-    createdAt: "12 years ago",
+    createdAt: new Date(),
     versions: [
       {
         id: 1,
@@ -17,6 +16,7 @@ const TermsOfServiceList = () => {
       },
     ],
     active: true,
+    totalFileSize: 30,
   };
 
   return (

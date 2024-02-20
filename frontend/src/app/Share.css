@@ -1,0 +1,8 @@
+.shareWrapper {
+  min-height: 130px;
+  min-width: 70vw;
+  background-color: #e7d7fe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

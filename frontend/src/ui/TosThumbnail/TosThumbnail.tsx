@@ -12,6 +12,7 @@ import tosImage from "../../assets/tosImage.png";
 import "./TosThumbnail.css";
 import { TermsOfService } from "../../app/types";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { format } from "date-fns";
 
 interface Props {
   tos: TermsOfService;
@@ -34,7 +35,9 @@ const TosThumbnail = ({ tos, link }: Props) => {
           justifyContent="space-evenly"
           alignItems="center"
         >
-          <span className="created">Created : {tos.createdAt}</span>
+          <span className="created">
+            Created : {format(tos.createdAt, "do MMMM yyyy")}
+          </span>
           <Chip
             size="small"
             label={tos.active ? "Active" : "Pending"}

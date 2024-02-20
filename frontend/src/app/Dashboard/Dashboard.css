@@ -13,12 +13,31 @@
 .container,
 .uploadContainer,
 .socials,
+.uploadForm,
 .share {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.primaryButton {
+  background-color: "#350182";
+  width: "60%";
+  color: "white";
+}
+.primaryButton:hover {
+  background: "inherit";
+  border: "2px solid #350182";
+  color: "#350182";
+}
+
+.uploadCard {
+  padding: 20px;
+  /* height: 30vh; */
+  width: 30vw;
+  justify-content: space-between;
+  flex-direction: column;
+}
 .socials {
   border-top: solid 2px rgb(28, 28, 28, 0.9);
   border-top-width: 50%;

@@ -15,10 +15,14 @@ import DocumentList from "../ui/DocumentList/DocumentList";
 import { useParams } from "react-router-dom";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 import ToggleOffIcon from "@mui/icons-material/ToggleOff";
+import { styled } from "@mui/material/styles";
 
-// interface Props {
-//   tos: TermsOfService;
-// }
+const StyledToggle = styled(ToggleButton)({
+  "&.Mui-selected, &.Mui-selected:hover": {
+    backgroundColor: "#350182",
+    color: "white",
+  },
+});
 
 const TermsOfServiceDetails = () => {
   const { tosId } = useParams();
@@ -54,7 +58,7 @@ const TermsOfServiceDetails = () => {
 
   return (
     <Sidebar>
-      <Stack spacing={3}>
+      <Stack spacing={3} sx={{ "&.Mui-selected": {} }}>
         <Breadcrumbs>
           <Link underline="hover" href="/app/terms-of-service">
             {" "}
@@ -67,7 +71,7 @@ const TermsOfServiceDetails = () => {
         </Typography>
         <Stack direction="row" justifyContent="space-between">
           <Typography>{tos.description}</Typography>
-          <ToggleButton
+          <StyledToggle
             value="check"
             selected={activeSelected}
             onChange={() => setActiveSelected(!activeSelected)}
@@ -75,10 +79,14 @@ const TermsOfServiceDetails = () => {
           >
             <Typography variant="caption" sx={{ mr: 1 }}>
               {" "}
-              {activeSelected ? "Active" : "Inactive"}
+              Live
             </Typography>{" "}
-            {activeSelected ? <ToggleOnIcon /> : <ToggleOffIcon />}
-          </ToggleButton>
+            {activeSelected ? (
+              <ToggleOnIcon sx={{ color: "white" }} />
+            ) : (
+              <ToggleOffIcon />
+            )}
+          </StyledToggle>
         </Stack>
 
         <Box>

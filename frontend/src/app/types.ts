@@ -24,7 +24,8 @@ export type TermsOfService = {
   id: number;
   name: string;
   versions: TermsOfServiceVersion[];
-  createdAt: string;
+  createdAt: Date;
   organization?: Organization | null;
   active?: boolean;
+  totalFileSize: number;
 };
