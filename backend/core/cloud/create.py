@@ -13,7 +13,7 @@ def create_organization_bucket(cos, organization_name):
             CreateBucketConfiguration={"LocationConstraint": COS_LOCATION}
         )
 
-        Organization.objects.filter(profile__name=organization_name).update(
+        Organization.objects.filter(user__first_name=organization_name).update(
             bucket_name=bucket_name
         )
 

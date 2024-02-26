@@ -24,6 +24,8 @@ import ClearAllIcon from "@mui/icons-material/ClearAll";
 import { Stack } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import { Share } from "@mui/icons-material";
+import useStore from "../../store/store";
+import { useShallow } from "zustand/react/shallow";
 
 const drawerWidth = 240;
 
@@ -110,6 +112,12 @@ const Sidebar = ({ children }: Props) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
+  const { organization } = useStore(
+    useShallow((state) => ({
+      organization: state.organization,
+    }))
+  );
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -125,8 +133,6 @@ const Sidebar = ({ children }: Props) => {
         <Toolbar
           sx={{
             backgroundColor: "#f7f5fa",
-            display: "flex",
-            flexDirection: "row",
           }}
         >
           <IconButton
@@ -150,9 +156,13 @@ const Sidebar = ({ children }: Props) => {
             <b>lilac</b>
           </Typography>
           <Avatar
-            className="avatar"
-            src="https://en.m.wikipedia.org/wiki/File:Spotify_logo_without_text.svg"
-          ></Avatar>
+            className="organizationLogo"
+            sx={{
+              marginLeft: "auto",
+            }}
+          >
+            <img src={organization?.logoUrl} />
+          </Avatar>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>

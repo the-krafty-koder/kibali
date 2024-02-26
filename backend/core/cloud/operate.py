@@ -16,8 +16,10 @@ class Operate:
             return response
         return response
 
-    def upload_file(self, bucket_name, item_name, file):
-        response = upload_to_cloud(self.cos, bucket_name, item_name, file)
+    def upload_file(self, bucket_name, item_name, file, is_tos):
+        response = upload_to_cloud(
+            self.cos, bucket_name, item_name, file, is_tos
+        )
         if response.startswith("Error"):
             return False
         return True

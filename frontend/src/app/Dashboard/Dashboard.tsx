@@ -10,7 +10,6 @@ import {
   CircularProgress,
   Grid,
   IconButton,
-  Input,
   Modal,
   Stack,
   TextField,
@@ -25,12 +24,31 @@ import useStore from "../../store/store";
 import { useShallow } from "zustand/react/shallow";
 import { chartOptions, chartSeries } from "./chart";
 import { format } from "date-fns";
+import { z } from "zod";
+
+export const MAX_FILE_SIZE = 5120;
+
+const UploadFileSchema = z.object({
+  name: z.string().min(5),
+  description: z.string().min(10).max(500),
+  file: z
+    .instanceof(File, { message: "A file has to be chosen" })
+    .refine((file) => {
+      return file.size >= MAX_FILE_SIZE;
+    }, `File size should be less than 5MB.`),
+});
 
 const Dashboard = () => {
   const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
   const [uploadValues, setUploadValues] = useState<{
     name: string;
+    description: string;
     file: File;
+  }>();
+  const [uploadErrors, setUploadErrors] = useState<{
+    name?: string[];
+    description?: string[];
+    file?: string[];
   }>();
   const [backdrop, setBackdrop] = useState<boolean>(false);
 
@@ -54,6 +72,7 @@ const Dashboard = () => {
     (sum, tos) => sum + tos.totalFileSize,
     0
   );
+  console.log(totalStorageUsed);
 
   useEffect(() => {
     if (backdrop === false) {
@@ -63,12 +82,19 @@ const Dashboard = () => {
   }, [backdrop]);
 
   const handleUploadedFile = () => {
+    const validation = UploadFileSchema.safeParse(uploadValues);
+    if (!validation.success) {
+      setUploadErrors(validation.error.flatten().fieldErrors);
+      return;
+    }
+
     setOpenUploadModal(false);
     setBackdrop(true);
     const uploadEndpoint = `${process.env.REACT_APP_API_ENDPOINT}/terms-of-service/${organization?.id}/upload`;
     const formData = new FormData();
 
     formData.append("name", uploadValues?.name!);
+    formData.append("description", uploadValues?.description!);
     formData.append("file", uploadValues?.file!);
 
     fetch(uploadEndpoint, {
@@ -111,9 +137,13 @@ const Dashboard = () => {
             <Typography
               component="div"
               className="headers"
-              sx={{ fontFamily: "Montserrat", borderBottom: 0 }}
+              sx={{
+                fontFamily: "Outfit",
+                borderBottom: 0,
+                color: "rgba(0,0,0,.7)",
+              }}
             >
-              <b>UPLOAD</b>
+              <b>Upload</b>
             </Typography>
             <div className="uploadContainer">
               <Box
@@ -142,7 +172,7 @@ const Dashboard = () => {
                   <form>
                     <Stack spacing={2}>
                       <Typography variant="h5">
-                        Upload a terms of service file
+                        Upload a terms of service file (pdf)
                       </Typography>
                       <TextField
                         label="Name"
@@ -151,6 +181,28 @@ const Dashboard = () => {
                           setUploadValues({ ...uploadValues!, name: value })
                         }
                       />
+                      {uploadErrors?.name && (
+                        <Typography color="error">
+                          {uploadErrors.name}
+                        </Typography>
+                      )}
+
+                      <TextField
+                        multiline
+                        label="Description"
+                        value={uploadValues?.description}
+                        onChange={({ target: { value } }) =>
+                          setUploadValues({
+                            ...uploadValues!,
+                            description: value,
+                          })
+                        }
+                      />
+                      {uploadErrors?.description && (
+                        <Typography color="error">
+                          {uploadErrors.description}
+                        </Typography>
+                      )}
                       <TextField
                         type="file"
                         onChange={(event) => {
@@ -160,7 +212,14 @@ const Dashboard = () => {
                             file: files![0],
                           });
                         }}
+                        inputProps={{ accept: "application/pdf" }}
                       />
+                      {uploadErrors?.file && (
+                        <Typography color="error">
+                          {uploadErrors.file}
+                        </Typography>
+                      )}
+
                       <br />
                       <Button
                         variant="contained"
@@ -187,37 +246,40 @@ const Dashboard = () => {
             <Typography
               component="div"
               className="headers"
-              sx={{ fontFamily: "Montserrat" }}
+              sx={{ fontFamily: "Outfit", color: "rgba(0,0,0,.7)" }}
             >
-              <b>TERMS OF SERVICE</b>
+              <b>Terms of Service</b>
             </Typography>
-            <div>
-              {termsOfServices.map((termsOfService) => {
-                return (
-                  <DocumentList
-                    key={termsOfService.name}
-                    link={`/app/terms-of-service/${termsOfService.id}`}
-                    firstAction={
-                      <Chip label={`${termsOfService.totalFileSize} MB`} />
-                    }
-                    secondAction={
-                      <IconButton sx={{ marginRight: 0 }}>
-                        {" "}
-                        <MoreVert />
-                      </IconButton>
-                    }
-                  >
-                    <Stack spacing={1}>
-                      <Typography variant="subtitle1">
-                        {termsOfService.name}
-                      </Typography>
-                      <Typography className="date">
-                        {format(termsOfService.createdAt, "do MMMM yyyy")}
-                      </Typography>
-                    </Stack>
-                  </DocumentList>
-                );
-              })}
+            <div className="tosContainer">
+              {termsOfServices
+                .reverse()
+                .slice(0, 4)
+                .map((termsOfService) => {
+                  return (
+                    <DocumentList
+                      key={termsOfService.name}
+                      link={`/app/terms-of-service/${termsOfService.id}`}
+                      firstAction={
+                        <Chip label={`${termsOfService.totalFileSize} MB`} />
+                      }
+                      secondAction={
+                        <IconButton sx={{ marginRight: 0 }}>
+                          {" "}
+                          <MoreVert />
+                        </IconButton>
+                      }
+                    >
+                      <Stack spacing={1}>
+                        <Typography variant="subtitle1">
+                          {termsOfService.name}
+                        </Typography>
+                        <Typography className="date">
+                          {format(termsOfService.createdAt, "do MMMM yyyy")}
+                        </Typography>
+                      </Stack>
+                    </DocumentList>
+                  );
+                })}
             </div>
           </Grid>
           <Grid item xs={1} className="dividerContainer">
@@ -238,9 +300,9 @@ const Dashboard = () => {
               <Typography
                 component="div"
                 className="analytics-header"
-                sx={{ fontFamily: "Montserrat" }}
+                sx={{ fontFamily: "Outfit", color: "rgba(0,0,0,.7)" }}
               >
-                <b>STORAGE</b>
+                <b>Storage</b>
               </Typography>
               <Box
                 sx={{
@@ -268,7 +330,9 @@ const Dashboard = () => {
               component={Stack}
               spacing={1}
             >
-              <Typography variant="h6">Legal Review</Typography>
+              <Typography fontFamily="Outfit">
+                <b>Legal Review</b>
+              </Typography>
               <Typography>
                 Ensure your terms of service agreements are legally sound.
               </Typography>

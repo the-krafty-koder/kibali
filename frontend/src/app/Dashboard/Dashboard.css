@@ -30,7 +30,6 @@
   border: "2px solid #350182";
   color: "#350182";
 }
-
 .uploadCard {
   padding: 20px;
   /* height: 30vh; */
@@ -57,7 +56,7 @@
 }
 
 .uploadContainer {
-  margin-bottom: 30px;
+  margin-bottom: 60px;
 }
 .upload {
   background-color: "#350182";

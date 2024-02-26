@@ -31,9 +31,11 @@ const Login = () => {
   const [errors, setErrors] = useState<{
     email?: string[];
     password?: string[];
+    invalid?: boolean;
   }>({
     email: [],
     password: [],
+    invalid: false,
   });
 
   const navigate = useNavigate();
@@ -65,6 +67,8 @@ const Login = () => {
           email: values.email,
         });
         return navigate("/app/dashboard");
+      } else {
+        setErrors({ invalid: true });
       }
     });
   };
@@ -103,6 +107,11 @@ const Login = () => {
           }}
         >
           <Stack spacing={1}>
+            {errors.invalid && (
+              <Typography variant="subtitle1" color="error">
+                Invalid email or password
+              </Typography>
+            )}
             <FormLabel>Email</FormLabel>
             <TextField
               label="example@gmail.com"

@@ -1,5 +1,7 @@
 """Models definition"""
+
 from email.policy import default
+from functools import reduce
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AbstractUser, User
 from django.utils import timezone
@@ -31,6 +33,7 @@ class Organization(models.Model):
     bucket_name = models.CharField()
     phone_number = models.CharField()
     country = models.CharField()
+    logo_url = models.CharField(default="", blank=True)
 
 
 class TermsOfServiceVersion(models.Model):
@@ -42,6 +45,10 @@ class TermsOfServiceVersion(models.Model):
     share_url = models.URLField(blank=True)
     storage_path = models.CharField()
     created_at = models.DateTimeField(default=timezone.now())
+    file_size = models.IntegerField()
+
+    class Meta:
+        ordering = ["-created_at"]
 
 
 class TermsOfServiceManager(models.Manager):
@@ -77,6 +84,8 @@ class TermsOfService(models.Model):
     name = models.CharField(blank=False, unique=True)
     versions = models.ManyToManyField(TermsOfServiceVersion, blank=True)
     created_at = models.DateTimeField(default=timezone.now())
+    description = models.CharField(default="", blank=True)
+    active = models.BooleanField(default=True)
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, blank=False
     )
@@ -90,3 +99,17 @@ class TermsOfService(models.Model):
         )
 
         return paths
+
+    @property
+    def total_file_size(self):
+        total_size = self.versions.aggregate(models.Sum("file_size"))[
+            "file_size__sum"
+        ]
+
+        if total_size:
+            return round(total_size / (1024 * 1024), 3)
+
+        return 0
+
+    class Meta:
+        ordering = ["-created_at"]

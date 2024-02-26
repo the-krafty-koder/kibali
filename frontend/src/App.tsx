@@ -2,7 +2,13 @@ import React from "react";
 import "./App.css";
 import Home from "./pages/Home";
 import { Grid, ThemeProvider, createTheme } from "@mui/material";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  redirect,
+  useNavigate,
+} from "react-router-dom";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import TermsOfServiceList from "./app/TermsOfServiceLIst";
@@ -58,34 +64,49 @@ const theme = createTheme({
 });
 
 function App() {
-  const store = useStore();
+  const { credentials } = useStore((state) => ({
+    credentials: state.credentials,
+  }));
+
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Routes>
           <Route path="" element={<Home />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/app/dashboard" element={<Dashboard />} />
+          <Route
+            path="/login"
+            element={!credentials.token ? <Login /> : <Dashboard />}
+          />
+          <Route
+            path="/app/dashboard"
+            element={!credentials.token ? <Login /> : <Dashboard />}
+          />
           <Route
             path="/app/terms-of-service"
-            element={<TermsOfServiceList />}
+            element={!credentials.token ? <Login /> : <TermsOfServiceList />}
           />
           <Route
             path="/app/terms-of-service/:tosId"
-            element={<TermsOfService />}
+            element={!credentials.token ? <Login /> : <TermsOfService />}
           />
           <Route
             path="/app/terms-of-service/:tosId/versions/:versionId"
-            element={<TermsOfServiceVersion />}
+            element={!credentials.token ? <Login /> : <TermsOfServiceVersion />}
           />
-          <Route path="/app/share" element={<Share />} />
-          <Route path="/app/profile" element={<Profile />} />
+          <Route
+            path="/app/share"
+            element={!credentials.token ? <Login /> : <Share />}
+          />
+          <Route
+            path="/app/profile"
+            element={!credentials.token ? <Login /> : <Profile />}
+          />
 
-          <Route path="/orgName/:termsOfServiceName" element={<DisplayTos />} />
-
-          {/* <Route path="/app/analytics" element={<Analytics />}
-          <Route path="/app/profile" element={<Profile />} /> */}
+          <Route
+            path="view/:orgName/:termsOfServiceName"
+            element={!credentials.token ? <Login /> : <DisplayTos />}
+          />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -3,19 +3,19 @@ import logo from "../assets/spotify_logo.png";
 import { useParams } from "react-router-dom";
 import "./DisplayTos.css";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
+import useStore from "../store/store";
 
 const DisplayTos = () => {
   const { termsOfServiceName } = useParams();
+  const { organization } = useStore((state) => ({
+    organization: state.organization,
+  }));
 
   return (
     <div style={{ position: "relative" }}>
       <Stack className="topHeader" direction="row">
         <Box className="organizationLogo">
-          <img
-            src={
-              "https://blogs.microsoft.com/wp-content/uploads/prod/2012/08/8867.Microsoft_5F00_Logo_2D00_for_2D00_screen-1920x706.jpg"
-            }
-          />
+          <img src={organization?.logoUrl} />
         </Box>
       </Stack>
       <Grid container className="tosContentWrapper">

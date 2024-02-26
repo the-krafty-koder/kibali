@@ -1,6 +1,7 @@
 import {
   Box,
   Breadcrumbs,
+  Button,
   Link,
   Stack,
   Tab,
@@ -12,52 +13,59 @@ import { TermsOfService, TermsOfServiceVersion } from "./types";
 import { useState } from "react";
 import DocumentList from "../ui/DocumentList/DocumentList";
 import { useNavigate, useParams } from "react-router-dom";
-
-interface Props {
-  version: TermsOfServiceVersion;
-}
+import useStore from "../store/store";
+import { useShallow } from "zustand/react/shallow";
 
 const TermsOfServiceVersionDetails = () => {
   const { tosId, versionId } = useParams();
+
   const navigate = useNavigate();
 
-  const { versionNumber, url } = {
-    versionNumber: 2,
-    url: "https:boto/path1",
-  };
+  const { termsOfServices } = useStore(
+    useShallow((state) => ({
+      termsOfServices: state.termsOfServices,
+    }))
+  );
+
+  const version = termsOfServices
+    .find((termsOfService) => termsOfService.id === parseInt(tosId!))
+    ?.versions.find(
+      (version) => version.versionNumber === parseInt(versionId!)
+    );
+
   return (
     <Sidebar>
       <Stack spacing={3}>
         <Breadcrumbs>
-          <Link underline="hover" href="/app/terms-of-service">
+          <Link
+            underline="hover"
+            href="/app/terms-of-service"
+            sx={{ color: "rgba(53, 1, 130, .7)" }}
+          >
             {" "}
             Terms of Service{" "}
           </Link>
           <Link
             underline="hover"
             onClick={() => navigate(-1)}
-            sx={{ cursor: "pointer" }}
+            sx={{ cursor: "pointer", color: "rgba(53, 1, 130, .7)" }}
           >
             {" "}
             Versions{" "}
           </Link>
-          <Typography>Version {versionNumber}</Typography>
+          <Typography>Version {version?.versionNumber}</Typography>
         </Breadcrumbs>
-        <Typography variant="h5">
-          <b>Version {versionNumber}</b>
-        </Typography>
+        <Stack direction="row" justifyContent="space-between">
+          <Typography variant="h5">
+            <b>Version {version?.versionNumber}</b>
+          </Typography>
+        </Stack>
+
         <Box>
           <Tabs>
             <Tab label="Document"></Tab>
           </Tabs>
-          <iframe
-            src={
-              "https://unec.edu.az/application/uploads/2014/12/pdf-sample.pdf"
-            }
-            height="800"
-            width="100%"
-            style={{ marginTop: "20px" }}
-          />
+          <iframe src={version?.shareUrl} height="800" width="100%" />
         </Box>
       </Stack>
     </Sidebar>

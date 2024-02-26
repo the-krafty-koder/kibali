@@ -7,12 +7,19 @@ import {
   Stack,
   TextField,
   Typography,
+  Modal,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import Sidebar from "../ui/Sidebar/Sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Link } from "react-router-dom";
 import { startButton as buttonStyle } from "../pages/Navigation.css";
+import { useShallow } from "zustand/react/shallow";
+import useStore from "../store/store";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProfileSchema = z.object({
   fullName: z.string().min(2),
@@ -22,11 +29,28 @@ const ProfileSchema = z.object({
 });
 
 const Profile = () => {
+  const [openUploadModal, setOpenUploadModal] = useState<boolean>(false);
+  const [backdrop, setBackdrop] = useState<boolean>(false);
+  const [uploadValues, setUploadValues] = useState<{ file: File }>();
+  const { organization, credentials, fetchOrganization } = useStore(
+    (state) => ({
+      organization: state.organization,
+      credentials: state.credentials,
+      fetchOrganization: state.fetchOrganization,
+    })
+  );
+
+  useEffect(() => {
+    if (backdrop === false) {
+      fetchOrganization(organization?.user.email!);
+    }
+  }, [backdrop]);
+
   const [values, setValues] = useState({
-    fullName: "",
-    email: "",
-    country: "",
-    phoneNumber: "",
+    fullName: organization?.user.firstName || "",
+    email: organization?.user.email,
+    country: organization?.country,
+    phoneNumber: organization?.phoneNumber,
   });
 
   const [errors, setErrors] = useState<{
@@ -44,15 +68,16 @@ const Profile = () => {
   });
 
   const handleSubmit = async () => {
-    const endpoint = `${process.env.REACT_APP_API_ENDPOINT}/organizations`;
+    const endpoint = `${process.env.REACT_APP_API_ENDPOINT}/organizations/${organization?.id}`;
     const validation = ProfileSchema.safeParse(values);
+
     if (!validation.success) {
       setErrors(validation.error.flatten().fieldErrors);
       return;
     }
 
     await fetch(endpoint, {
-      method: "POST",
+      method: "PUT",
       body: JSON.stringify({
         user: {
           first_name: values.fullName,
@@ -64,10 +89,53 @@ const Profile = () => {
       }),
       headers: {
         "Content-Type": "application/json",
+        Authorization: `$Token ${credentials.token}`,
       },
     }).then((response) => {
       if (response.status === 201) {
         window.location.href = "/login";
+      }
+    });
+
+    fetchOrganization(values.email!);
+  };
+
+  const handleUploadedFile = () => {
+    setOpenUploadModal(false);
+    setBackdrop(true);
+    const uploadEndpoint = `${process.env.REACT_APP_API_ENDPOINT}/organizations/${organization?.id}/upload-logo`;
+    const formData = new FormData();
+
+    formData.append("file", uploadValues?.file!);
+
+    fetch(uploadEndpoint, {
+      headers: {
+        Authorization: `Token ${credentials.token}`,
+      },
+      method: "POST",
+      body: formData,
+    }).then(async (response) => {
+      if (response.status === 201) {
+        toast.success("Upload successful!", {
+          position: "top-right",
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setBackdrop(false);
+      } else {
+        toast.error("Upload failed, please try again later", {
+          position: "top-right",
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     });
   };
@@ -105,14 +173,70 @@ const Profile = () => {
               borderBottom: "solid 1px rgb(28, 28, 28, 0.5)",
               paddingBottom: "20px",
             }}
+            component={Stack}
+            spacing={5}
+            direction="row"
+            alignItems="center"
+            padding="20px"
           >
             <Avatar
+              className="organizationLogo"
               sx={{
                 height: "100px",
                 width: "100px",
                 marginTop: "20px",
               }}
-            ></Avatar>
+            >
+              <img src={organization?.logoUrl} />
+            </Avatar>
+            <Button
+              variant="outlined"
+              color="inherit"
+              sx={{ color: "black" }}
+              onClick={() => setOpenUploadModal(true)}
+            >
+              {" "}
+              Change Logo
+            </Button>
+            <Modal
+              open={openUploadModal}
+              onClose={() => setOpenUploadModal(false)}
+              className="uploadForm"
+            >
+              <Card className="uploadCard">
+                <form>
+                  <Stack spacing={2}>
+                    <Typography variant="h5">Upload a logo</Typography>
+                    <TextField
+                      type="file"
+                      onChange={(event) => {
+                        const { files } = event.target as HTMLInputElement;
+                        setUploadValues({
+                          file: files![0],
+                        });
+                      }}
+                    />
+                    <br />
+                    <Button
+                      variant="contained"
+                      sx={{
+                        background: "#350182",
+                        color: "white",
+                        width: "25%",
+                        ":hover": {
+                          background: "inherit",
+                          border: " solid #350182",
+                          color: "#350182",
+                        },
+                      }}
+                      onClick={handleUploadedFile}
+                    >
+                      Upload
+                    </Button>
+                  </Stack>
+                </form>
+              </Card>
+            </Modal>
           </Box>
           <Box
             sx={{
@@ -194,10 +318,17 @@ const Profile = () => {
               </Stack>
               <Stack spacing={2} direction="row" justifyContent="center">
                 <Button
-                  href="/signup"
                   variant="outlined"
                   color="inherit"
                   sx={{ color: "black", width: "20vw" }}
+                  onClick={() =>
+                    setValues({
+                      fullName: "",
+                      email: "",
+                      country: "",
+                      phoneNumber: "",
+                    })
+                  }
                 >
                   Cancel
                 </Button>
@@ -214,6 +345,9 @@ const Profile = () => {
           </Box>
         </Card>
       </Stack>
+      <Backdrop open={backdrop} invisible={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Sidebar>
   );
 };

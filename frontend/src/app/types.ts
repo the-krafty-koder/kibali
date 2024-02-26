@@ -11,13 +11,16 @@ export type Organization = {
   bucketName: string;
   phoneNumber: string;
   country: string;
+  logoUrl: string;
 };
 
 export type TermsOfServiceVersion = {
   id: number;
   versionNumber: number;
   storagePath: string;
-  url: string;
+  shareUrl: string;
+  fileSize: string;
+  createdAt: Date;
 };
 
 export type TermsOfService = {
@@ -28,4 +31,5 @@ export type TermsOfService = {
   organization?: Organization | null;
   active?: boolean;
   totalFileSize: number;
+  description: string;
 };

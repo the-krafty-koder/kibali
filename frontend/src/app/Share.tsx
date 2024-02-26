@@ -2,11 +2,13 @@ import {
   Box,
   Button,
   Card,
+  Modal,
   Stack,
   Step,
   StepIcon,
   StepLabel,
   Stepper,
+  TextField,
   Typography,
 } from "@mui/material";
 import Sidebar from "../ui/Sidebar/Sidebar";
@@ -15,62 +17,21 @@ import GradingOutlinedIcon from "@mui/icons-material/GradingOutlined";
 import "./Share.css";
 import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 import DocumentList from "../ui/DocumentList/DocumentList";
+import { useShallow } from "zustand/react/shallow";
+import useStore from "../store/store";
+import { useState } from "react";
 
 const Share = () => {
-  const termsOfServices = [
-    {
-      id: 1,
-      name: "Website Terms of Service Final Version",
-      createdAt: "March 10th - 5.35pm",
-      versions: [
-        {
-          id: 1,
-          versionNumber: 1,
-          storagePath: "/path1",
-          url: "https:boto/path1",
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "Website Terms of Service First Draft",
-      createdAt: "March 10th - 5.35pm",
-      versions: [
-        {
-          id: 1,
-          versionNumber: 1,
-          storagePath: "/path1",
-          url: "https:boto/path1",
-        },
-      ],
-    },
-    {
-      id: 3,
-      name: "API Terms of Service Final",
-      createdAt: "March 10th - 5.35pm",
-      versions: [
-        {
-          id: 1,
-          versionNumber: 1,
-          storagePath: "/path1",
-          url: "https:boto/path1",
-        },
-      ],
-    },
-    {
-      id: 4,
-      name: "API Terms of Service Initial Draft",
-      createdAt: "March 10th - 5.35pm",
-      versions: [
-        {
-          id: 1,
-          versionNumber: 1,
-          storagePath: "/path1",
-          url: "https:boto/path1",
-        },
-      ],
-    },
-  ];
+  const { termsOfServices, fetchTermsOfService, credentials } = useStore(
+    useShallow((state) => ({
+      termsOfServices: state.termsOfServices,
+      fetchTermsOfService: state.fetchTermsOfService,
+      credentials: state.credentials,
+    }))
+  );
+
+  const [openShareModal, setOpenShareModal] = useState(false);
+
   return (
     <Sidebar>
       <Box
@@ -112,7 +73,20 @@ const Share = () => {
         <Box width="70vw">
           <div>
             {termsOfServices.map((termsOfService, index) => {
-              const background = index % 2 == 0 ? "rgba(255, 236, 228, .4)" : "inherit";
+              const background =
+                index % 2 == 0 ? "rgba(255, 236, 228, .4)" : "inherit";
+
+              const shareUrl = termsOfService.versions.at(0)?.shareUrl;
+              const tosName = termsOfService.name
+                .toLowerCase()
+                .split(" ")
+                .join("-");
+
+              const orgName = termsOfService.organization?.user.firstName
+                .toLowerCase()
+                .split(" ")
+                .join("-");
+
               return (
                 <Box sx={{ background, paddingLeft: "10px" }}>
                   <DocumentList
@@ -129,27 +103,67 @@ const Share = () => {
                           //     color: "#350182",
                           //   },
                         }}
-                        href={`/orgName/${termsOfService.name}`}
+                        href={`view/${orgName}/${tosName}`}
                       >
                         {" "}
                         Preview
                       </Button>
                     }
                     secondAction={
-                      <Button
-                        variant="outlined"
-                        sx={{
-                          borderColor: "#350182",
-                          color: "#350182",
-                          ":hover": {
+                      <>
+                        <Button
+                          variant="outlined"
+                          sx={{
                             borderColor: "#350182",
                             color: "#350182",
-                          },
-                        }}
-                      >
-                        {" "}
-                        Generate url
-                      </Button>
+                            ":hover": {
+                              borderColor: "#350182",
+                              color: "#350182",
+                            },
+                          }}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            setOpenShareModal(true);
+                          }}
+                        >
+                          {" "}
+                          Share
+                        </Button>
+                        <Modal
+                          open={openShareModal}
+                          onClose={() => setOpenShareModal(false)}
+                          className="uploadForm"
+                        >
+                          <Card className="uploadCard">
+                            <form>
+                              <Stack spacing={2}>
+                                <Typography variant="h5" fontFamily="Outfit">
+                                  Share Terms of Service
+                                </Typography>
+                                <Typography variant="subtitle2">
+                                  Share your file on socials or embed on your
+                                  site
+                                </Typography>
+                                <TextField value={shareUrl} />
+                                <Box
+                                  sx={{
+                                    background: "black",
+                                    color: "white",
+                                    padding: "10px",
+                                  }}
+                                >
+                                  <code>
+                                    {`
+                                    <iframe src=${shareUrl}/>
+
+                                    `}
+                                  </code>
+                                </Box>
+                              </Stack>
+                            </form>
+                          </Card>
+                        </Modal>
+                      </>
                     }
                   >
                     <Stack spacing={1}>

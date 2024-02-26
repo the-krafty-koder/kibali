@@ -1,6 +1,7 @@
 export const chartOptions = {
   chart: {
     id: "radial-bar",
+    fontFamily: "Outfit",
   },
   plotOptions: {
     radialBar: {
@@ -14,6 +15,16 @@ export const chartOptions = {
       hollow: {
         margin: 15,
         size: "70%",
+      },
+      dataLabels: {
+        name: {
+          fontFamily: "Outfit",
+          color: "rgba(0,0,0,0.6)",
+        },
+        value: {
+          fontSize: "30px",
+          show: true,
+        },
       },
     },
   },
@@ -29,10 +40,10 @@ export const chartOptions = {
   stroke: {
     lineCap: "round" as "round" | "square" | "butt" | undefined,
   },
-  labels: ["Used", "Unused"],
+  labels: ["You've used up"],
 };
 
 export const chartSeries = (totalSize: number) => {
-  const percentageUsed = Math.round((totalSize / 250) * 100);
-  return [percentageUsed];
+  const percentageUsed = Math.round((totalSize / 50) * 100);
+  return [percentageUsed === 0 ? 1 : percentageUsed];
 };

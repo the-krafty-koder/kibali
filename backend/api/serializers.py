@@ -1,3 +1,4 @@
+import logging
 import re
 
 from django.contrib.auth.models import User
@@ -15,7 +16,8 @@ class UserSerializer(serializers.ModelSerializer):
     """Serializer for organization user model"""
 
     password = serializers.CharField(
-        write_only=True, required=True, validators=[validate_password]
+        write_only=True,
+        required=False,
     )
 
     class Meta:
@@ -36,18 +38,24 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-    def validate(self, attrs):
-        password = attrs.get("password")
-        if (
-            re.search("[A-Z]", password) is None
-            and re.search("[0-9]", password) is None
-            and re.search("[^A-Za-z0-9]", password) is None
-        ):
-            raise serializers.ValidationError(
-                "Password must contain alphanumeric values"
-            )
+    # def update(self, instance, validated_data):
+    #     OrganizationUser.objects.filter(id=).update(**validated_data)
+    #     instance.save()
+    #     return instance
 
-        return attrs
+    # def validate(self, attrs):
+    #     password = attrs.get("password")
+    #     print("pass", password)
+    #     if (
+    #         re.search("[A-Z]", password) is None
+    #         and re.search("[0-9]", password) is None
+    #         and re.search("[^A-Za-z0-9]", password) is None
+    #     ):
+    #         raise serializers.ValidationError(
+    #             "Password must contain alphanumeric values"
+    #         )
+
+    #     return attrs
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -57,7 +65,14 @@ class OrganizationSerializer(serializers.ModelSerializer):
     bucket_name = serializers.CharField(read_only=True)
 
     class Meta:
-        fields = ["id", "user", "bucket_name", "phone_number", "country"]
+        fields = [
+            "id",
+            "user",
+            "bucket_name",
+            "phone_number",
+            "country",
+            "logo_url",
+        ]
         model = Organization
 
     def create(self, validated_data):
@@ -71,12 +86,32 @@ class OrganizationSerializer(serializers.ModelSerializer):
             )
             return organization
 
+    def update(self, instance, validated_data):
+        # user_data = validated_data.pop("user")
+        # logging.log(level=logging.INFO, msg=user_data)
+
+        # user = OrganizationUser.objects.filter(id=instance.user.id).update(
+        #     **user_data
+        # )
+        org = Organization.objects.filter(id=instance.id).update(
+            **validated_data
+        )
+
+        return org
+
 
 class TermsOfServiceVersionSerializer(serializers.ModelSerializer):
     """Serializer for terms of service version model"""
 
     class Meta:
-        fields = ["id", "version_number", "storage_path", "share_url"]
+        fields = [
+            "id",
+            "version_number",
+            "storage_path",
+            "share_url",
+            "file_size",
+            "created_at",
+        ]
         model = TermsOfServiceVersion
 
 
@@ -90,22 +125,30 @@ class TermsOfServiceSerializer(serializers.ModelSerializer):
         source="organization",
         write_only=True,
     )
+    total_file_size = serializers.ReadOnlyField()
 
     class Meta:
-        fields = ["name", "versions", "organization", "id", "organization_id"]
+        fields = [
+            "name",
+            "versions",
+            "organization",
+            "id",
+            "organization_id",
+            "total_file_size",
+            "created_at",
+            "description",
+            "active",
+        ]
         model = TermsOfService
 
-    def update(self, validated_data):
-        versions = validated_data.pop("versions")
-        tosId = validated_data.pop("id")
-        for version in versions:
-            TermsOfServiceVersion.objects.filter(version["id"]).update(
-                **version
-            )
-        tos = TermsOfService.objects.get(id=tosId)
-        return tos
+    # def update(self, instance, validated_data):
+    #     tos = TermsOfService.objects.filter(id=instance.id).update(
+    #         **validated_data
+    #     )
+    #     return tos
 
 
-class UploadTermsOfServiceSerializer(serializers.Serializer):
+class UploadFileSerializer(serializers.Serializer):
     file = serializers.FileField(allow_empty_file=False)
-    name = serializers.CharField()
+    description = serializers.CharField()
+    name = serializers.CharField(required=False)
