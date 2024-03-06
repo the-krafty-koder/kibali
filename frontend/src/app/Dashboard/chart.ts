@@ -44,6 +44,10 @@ export const chartOptions = {
 };
 
 export const chartSeries = (totalSize: number) => {
+  console.log(totalSize);
+  if (totalSize == 0) {
+    return [0];
+  }
   const percentageUsed = Math.round((totalSize / 50) * 100);
   return [percentageUsed === 0 ? 1 : percentageUsed];
 };

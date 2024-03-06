@@ -31,6 +31,7 @@ const Share = () => {
   );
 
   const [openShareModal, setOpenShareModal] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
   return (
     <Sidebar>
@@ -76,7 +77,6 @@ const Share = () => {
               const background =
                 index % 2 == 0 ? "rgba(255, 236, 228, .4)" : "inherit";
 
-              const shareUrl = termsOfService.versions.at(0)?.shareUrl;
               const tosName = termsOfService.name
                 .toLowerCase()
                 .split(" ")
@@ -86,6 +86,9 @@ const Share = () => {
                 .toLowerCase()
                 .split(" ")
                 .join("-");
+
+              const url = `${window.location.origin}/view/${orgName}/${tosName}`;
+              console.log(url);
 
               return (
                 <Box sx={{ background, paddingLeft: "10px" }}>
@@ -103,7 +106,7 @@ const Share = () => {
                           //     color: "#350182",
                           //   },
                         }}
-                        href={`view/${orgName}/${tosName}`}
+                        href={`/view/${orgName}/${tosName}`}
                       >
                         {" "}
                         Preview
@@ -123,46 +126,13 @@ const Share = () => {
                           }}
                           onClick={(event) => {
                             event.preventDefault();
+                            setShareUrl(url);
                             setOpenShareModal(true);
                           }}
                         >
                           {" "}
                           Share
                         </Button>
-                        <Modal
-                          open={openShareModal}
-                          onClose={() => setOpenShareModal(false)}
-                          className="uploadForm"
-                        >
-                          <Card className="uploadCard">
-                            <form>
-                              <Stack spacing={2}>
-                                <Typography variant="h5" fontFamily="Outfit">
-                                  Share Terms of Service
-                                </Typography>
-                                <Typography variant="subtitle2">
-                                  Share your file on socials or embed on your
-                                  site
-                                </Typography>
-                                <TextField value={shareUrl} />
-                                <Box
-                                  sx={{
-                                    background: "black",
-                                    color: "white",
-                                    padding: "10px",
-                                  }}
-                                >
-                                  <code>
-                                    {`
-                                    <iframe src=${shareUrl}/>
-
-                                    `}
-                                  </code>
-                                </Box>
-                              </Stack>
-                            </form>
-                          </Card>
-                        </Modal>
                       </>
                     }
                   >
@@ -172,6 +142,39 @@ const Share = () => {
                       </Typography>
                     </Stack>
                   </DocumentList>
+                  <Modal
+                    open={openShareModal}
+                    onClose={() => setOpenShareModal(false)}
+                    className="uploadForm"
+                  >
+                    <Card className="uploadCard">
+                      <form>
+                        <Stack spacing={2}>
+                          <Typography variant="h5" fontFamily="Outfit">
+                            Share Terms of Service
+                          </Typography>
+                          <Typography variant="subtitle2">
+                            Share your file on socials or embed on your site
+                          </Typography>
+                          <TextField value={shareUrl} />
+                          <Box
+                            sx={{
+                              background: "black",
+                              color: "white",
+                              padding: "10px",
+                            }}
+                          >
+                            <code>
+                              {`
+                                    <iframe src=${shareUrl}/>
+
+                                    `}
+                            </code>
+                          </Box>
+                        </Stack>
+                      </form>
+                    </Card>
+                  </Modal>
                 </Box>
               );
             })}

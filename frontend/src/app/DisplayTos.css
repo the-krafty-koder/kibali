@@ -46,6 +46,7 @@
 .tosContent {
   border: dotted 1px rgb(0, 0, 0, 0.1);
   padding: 20px;
+  white-space: "pre";
 }
 
 .textContent {

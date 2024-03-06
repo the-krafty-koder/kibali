@@ -130,6 +130,7 @@ const Login = () => {
           <Stack spacing={1}>
             <FormLabel>Password</FormLabel>
             <TextField
+              type="password"
               variant="outlined"
               value={values.password}
               onChange={({ target: { value } }) =>

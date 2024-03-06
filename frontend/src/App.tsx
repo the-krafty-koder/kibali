@@ -104,7 +104,7 @@ function App() {
           />
 
           <Route
-            path="view/:orgName/:termsOfServiceName"
+            path="/view/:orgName/:termsOfServiceName"
             element={!credentials.token ? <Login /> : <DisplayTos />}
           />
         </Routes>

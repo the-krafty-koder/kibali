@@ -186,6 +186,7 @@ const SignUp = () => {
             <Stack spacing={1}>
               <FormLabel>Password</FormLabel>
               <TextField
+                type="password"
                 variant="outlined"
                 value={values.password1}
                 onChange={({ target: { value } }) =>
@@ -201,6 +202,7 @@ const SignUp = () => {
             <Stack spacing={1}>
               <FormLabel>Confirm password</FormLabel>
               <TextField
+                type="password"
                 variant="outlined"
                 value={values.password2}
                 onChange={({ target: { value } }) =>

@@ -23,7 +23,7 @@ import AnalyticsIcon from "@mui/icons-material/Analytics";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 import { Stack } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import { Share } from "@mui/icons-material";
+import { DoorBack, ExitToApp, Logout, Share } from "@mui/icons-material";
 import useStore from "../../store/store";
 import { useShallow } from "zustand/react/shallow";
 
@@ -109,6 +109,10 @@ interface Props {
   children: React.ReactNode;
 }
 const Sidebar = ({ children }: Props) => {
+  const { setCredentials } = useStore((state) => ({
+    setCredentials: state.setCredentials,
+  }));
+
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -268,6 +272,30 @@ const Sidebar = ({ children }: Props) => {
                 <AccountCircleIcon />
               </ListItemIcon>
               <ListItemText primary="Profile" sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem key="Profile" disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              onClick={() =>
+                setCredentials({ token: undefined, email: undefined })
+              }
+              href="/"
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <Logout />
+              </ListItemIcon>
+              <ListItemText primary="Log out" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>
