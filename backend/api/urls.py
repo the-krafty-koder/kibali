@@ -7,8 +7,10 @@ from .views import (
     TermsOfServiceAPIView,
     TermsOfServiceListAPIView,
     TermsOfServiceVersionAPIView,
+    TextToPdf,
     UploadLogo,
     UploadTermsOfService,
+    # GetSignedUrl,
 )
 
 urlpatterns = [
@@ -22,12 +24,23 @@ urlpatterns = [
         "terms-of-service-version/<int:pk>",
         TermsOfServiceVersionAPIView.as_view(),
     ),
-    path("terms-of-service", TermsOfServiceListAPIView.as_view()),
+    path(
+        "terms-of-service/<int:id>",
+        TermsOfServiceListAPIView.as_view(),
+    ),
     path("terms-of-service/<int:pk>", TermsOfServiceAPIView.as_view()),
     path("terms-of-service/<int:id>/upload", UploadTermsOfService.as_view()),
     path("organizations/<int:id>/upload-logo", UploadLogo.as_view()),
+    # path(
+    #     "organizations/:id/get-signed-url/:bucket_name/:object_name",
+    #     GetSignedUrl.as_view(),
+    # ),
     path(
         "login",
         obtain_auth_token,
+    ),
+    path(
+        "generate-text",
+        TextToPdf.as_view(),
     ),
 ]

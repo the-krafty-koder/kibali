@@ -14,6 +14,7 @@ COS_API_KEY = env("COS_API_KEY")
 COS_API_ENDPOINT = env("COS_API_ENDPOINT")
 COS_API_INSTANCE_ID = env("COS_API_INSTANCE_ID")
 COS_S3_ENDPOINT = COS_API_ENDPOINT.split("https://")[-1]
+COS_IAM_ENDPOINT = env("COS_IAM_TOKEN_ENDPOINT")
 
 
 def run_config():
@@ -30,9 +31,9 @@ def run_config():
 def create_client():
     cos = ibm_boto3.client(
         "s3",
-        ibm_api_key_id=COS_API_KEY,
-        ibm_service_instance_id=COS_API_INSTANCE_ID,
         config=Config(signature_version="oauth"),
         endpoint_url=COS_API_ENDPOINT,
+        ibm_api_key_id=COS_API_KEY,
+        ibm_service_instance_id=COS_API_INSTANCE_ID,
     )
     return cos

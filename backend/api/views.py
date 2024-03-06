@@ -1,4 +1,5 @@
 import datetime
+from pypdf import PdfReader
 from symbol import term
 from django.core.serializers import serialize
 from django.http import Http404
@@ -31,8 +32,9 @@ class TermsOfServiceListAPIView(APIView):
 
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request):
-        tosList = TermsOfService.objects.all()
+    def get(self, request, *args, **kwargs):
+        orgId = self.kwargs.get("id")
+        tosList = TermsOfService.objects.filter(organization__id=orgId)
         serializer = TermsOfServiceSerializer(tosList, many=True)
         return Response(serializer.data)
 
@@ -172,6 +174,29 @@ class OrganizationListAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class TextToPdf(APIView):
+    """Generate text from pdf"""
+
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        parser_classes = (MultiPartParser,)
+        result = {}
+        file = request.data.get("file")
+        pdf_reader = PdfReader(file)
+        for page in pdf_reader.pages:
+            text = page.extract_text(extraction_mode="layout")
+            result[page.page_number] = text
+
+        if result != {}:
+            return Response(result)
+        else:
+            return Response(
+                {"message": "Text generation failed"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
 class UploadTermsOfService(APIView):
     """Upload a terms of service file"""
 
@@ -203,6 +228,23 @@ class UploadTermsOfService(APIView):
                 )
 
 
+# class GetSignedUrl(APIView):
+#     """Get download url"""
+
+#     permission_classes = (IsAuthenticated,)
+
+#     def get(self, request, *args, **kwargs):
+#         bucket_name = self.kwargs.get("bucket_name")
+#         object_name = self.kwargs.get("object_name")
+#         organizationId = self.kwargs.get("id")
+
+#         storage = Operate()
+#         return Response(
+#             {"message": "Upload failed"},
+#             status=status.HTTP_400_BAD_REQUEST,
+#         )
+
+
 class UploadLogo(APIView):
     """Upload a logo"""
 
@@ -226,17 +268,14 @@ class UploadLogo(APIView):
             )
 
             item_name = f"company-logo-{datetime.datetime.now().strftime('%m-%d-%Y-%H-%M-%S')}"
-            uploaded = storage.upload_file(
+            logo_url = storage.upload_file(
                 bucket_name=bucket_name,
                 item_name=item_name,
                 file=file,
                 is_tos=False,
             )
 
-            if uploaded:
-                logo_url = (
-                    f"https://{bucket_name}.{COS_S3_ENDPOINT}/{item_name}"
-                )
+            if logo_url:
                 org.logo_url = logo_url
                 org.save()
                 return Response(

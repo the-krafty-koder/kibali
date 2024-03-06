@@ -113,3 +113,7 @@ class TermsOfService(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+
+
+class IAMToken(models.Model):
+    token = models.CharField()

@@ -10,8 +10,10 @@ def upload_to_cloud(cos, bucket_name, item_name, file, is_tos):
         else f"image/{file.name.split('.').pop()}"
     )
     try:
-        response = cos.Object(bucket_name, item_name).put(
+        response = cos.put_object(
             Body=file,
+            Bucket=bucket_name,
+            Key=item_name,
             ContentType=content_type,
             ContentDisposition="inline",
         )

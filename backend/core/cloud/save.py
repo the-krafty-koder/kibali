@@ -18,20 +18,21 @@ def save_terms_of_service(
     upload_file_name = (
         f"{format_name(terms_of_service_name)}-version-{version_number}"
     )
-    bucket_name = (
-        org.bucket_name if org.bucket_name != "" else storage.create_bucket()
-    )
-    uploaded = storage.upload_file(
+    # bucket_name = (
+    #     org.bucket_name if org.bucket_name != "" else storage.create_bucket()
+    # )
+    bucket_name = storage.create_bucket()
+    url = storage.upload_file(
         bucket_name=bucket_name,
         item_name=upload_file_name,
         file=file,
         is_tos=True,
     )
 
-    if uploaded:
+    if url:
         version = TermsOfServiceVersion.objects.create(
             version_number=version_number,
-            share_url=f"https://{bucket_name}.{COS_S3_ENDPOINT}/{upload_file_name}",
+            share_url=url,
             storage_path=f"{bucket_name}/{upload_file_name}",
             file_size=file.size,
         )
