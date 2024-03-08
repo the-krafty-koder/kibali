@@ -26,6 +26,7 @@ class Operate:
         response = upload_to_cloud(
             self.cos_client, bucket_name, item_name, file, is_tos
         )
+        print(response)
         if response.startswith("Error"):
             return False
         self.make_public(bucket_name=bucket_name, item_name=item_name)

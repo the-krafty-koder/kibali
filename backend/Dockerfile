@@ -21,6 +21,7 @@ RUN set -ex && \
     pip install -r /tmp/requirements.txt && \
     rm -rf /root/.cache/
 COPY . /code
+ENV DATABASE_URL 'postgres://postgres:postgres@localhost:5432/kibali'
 
 RUN python manage.py collectstatic --noinput
 

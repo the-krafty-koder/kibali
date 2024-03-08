@@ -40,48 +40,12 @@ const DisplayTos = () => {
       termsOfService.name.toLowerCase().split(" ").join("-") ===
       termsOfServiceName
   );
-
-  // const extractPdfText = async (url: string | undefined) => {
-  //   let options = {
-  //     pagerender: render_page,
-  //   };
-
-  //   if (url) {
-  //     const file = await fetch(url).then(async (res) => res.blob());
-  //     const endpoint = `${process.env.REACT_APP_API_ENDPOINT}/generate-text`;
-  //     const formData = new FormData();
-
-  //     formData.append("file", file);
-
-  //     const text = fetch(endpoint, {
-  //       headers: {
-  //         Authorization: `Token ${credentials.token}`,
-  //       },
-  //       method: "POST",
-  //       body: formData,
-  //     }).then(async (response) => await response.json());
-  //     return text;
-  //   }
-  //   return "Terms of Service not available";
-  // };
   const latestVersion = termsOfService?.versions.at(0);
-  // useEffect(() => {
-  //   // if (termsOfService) {
-
-  //   //   extractPdfText(latestVersion?.shareUrl).then((txt) => {
-  //   //     setTextContent(txt);
-  //   //     setBackdrop(false);
-  //   //   });
-  //   // }
-  //   if (backdrop) {
-  //     setBackdrop(false);
-  //   }
-  // }, [backdrop]);
 
   return (
     <div style={{ position: "relative" }}>
       <Stack className="topHeader" direction="row">
-        <Box className="organizationLogo">
+        <Box className="displayLogo">
           <img src={organization?.logoUrl} />
         </Box>
       </Stack>

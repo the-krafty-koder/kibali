@@ -150,5 +150,5 @@ class TermsOfServiceSerializer(serializers.ModelSerializer):
 
 class UploadFileSerializer(serializers.Serializer):
     file = serializers.FileField(allow_empty_file=False)
-    description = serializers.CharField()
+    description = serializers.CharField(required=False)
     name = serializers.CharField(required=False)

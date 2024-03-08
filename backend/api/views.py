@@ -228,23 +228,6 @@ class UploadTermsOfService(APIView):
                 )
 
 
-# class GetSignedUrl(APIView):
-#     """Get download url"""
-
-#     permission_classes = (IsAuthenticated,)
-
-#     def get(self, request, *args, **kwargs):
-#         bucket_name = self.kwargs.get("bucket_name")
-#         object_name = self.kwargs.get("object_name")
-#         organizationId = self.kwargs.get("id")
-
-#         storage = Operate()
-#         return Response(
-#             {"message": "Upload failed"},
-#             status=status.HTTP_400_BAD_REQUEST,
-#         )
-
-
 class UploadLogo(APIView):
     """Upload a logo"""
 
@@ -268,14 +251,17 @@ class UploadLogo(APIView):
             )
 
             item_name = f"company-logo-{datetime.datetime.now().strftime('%m-%d-%Y-%H-%M-%S')}"
-            logo_url = storage.upload_file(
+            uploaded = storage.upload_file(
                 bucket_name=bucket_name,
                 item_name=item_name,
                 file=file,
                 is_tos=False,
             )
 
-            if logo_url:
+            if uploaded:
+                logo_url = (
+                    f"https://{bucket_name}.{COS_S3_ENDPOINT}/{item_name}"
+                )
                 org.logo_url = logo_url
                 org.save()
                 return Response(

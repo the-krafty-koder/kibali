@@ -1,3 +1,4 @@
+APScheduler==3.10.4
 asgiref==3.7.2
 black==23.12.1
 certifi==2023.11.17
@@ -36,5 +37,6 @@ six==1.16.0
 sqlparse==0.4.4
 tomli==2.0.1
 typing_extensions==4.9.0
+tzlocal==5.2
 urllib3==1.26.18
 zipp==3.17.0

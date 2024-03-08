@@ -12,10 +12,23 @@
   margin-top: 40px;
 }
 
+.displayLogo,
 .organizationLogo,
 .hostLogo {
   height: 100px;
   width: 100px;
+  background-color: "#f7f5fa";
+}
+
+.displayLogo {
+  display: flex;
+  align-items: center;
+}
+
+.displayLogo > img {
+  height: 60%;
+  width: 60%;
+  object-fit: contain;
   background-color: "#f7f5fa";
 }
 
