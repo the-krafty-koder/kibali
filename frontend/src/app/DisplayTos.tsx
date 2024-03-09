@@ -15,6 +15,7 @@ import useStore from "../store/store";
 import { format } from "date-fns";
 import pdfToText from "react-pdftotext";
 import { useEffect, useState } from "react";
+import { TermsOfService } from "./types";
 
 function render_page(pageData: any) {
   let render_options = {
@@ -28,25 +29,33 @@ function render_page(pageData: any) {
 const DisplayTos = () => {
   const [backdrop, setBackdrop] = useState<boolean>(true);
   // const [textContent, setTextContent] = useState({});
-  const { termsOfServiceName } = useParams();
-  const { organization, termsOfServices, credentials } = useStore((state) => ({
-    organization: state.organization,
-    termsOfServices: state.termsOfServices,
-    credentials: state.credentials,
-  }));
+  const { termsOfServiceName, orgName } = useParams();
 
-  const termsOfService = termsOfServices.find(
-    (termsOfService) =>
-      termsOfService.name.toLowerCase().split(" ").join("-") ===
-      termsOfServiceName
-  );
-  const latestVersion = termsOfService?.versions.reverse().at(0);
+  const [termsOfService, setTermsOfService] = useState<TermsOfService>();
+
+  const latestVersion = termsOfService?.versions.at(0);
+
+  useEffect(() => {
+    const fetchTos = async () => {
+      const endpoint = `${process.env.REACT_APP_API_ENDPOINT}/terms-of-service/${termsOfServiceName}`;
+      const response = await fetch(endpoint, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        const termsOfServices = await response.json();
+        setTermsOfService(termsOfServices);
+      }
+    };
+    fetchTos();
+  }, []);
 
   return (
     <div style={{ position: "relative" }}>
       <Stack className="topHeader" direction="row">
         <Box className="displayLogo">
-          <img src={organization?.logoUrl} />
+          <img src={termsOfService?.organization?.logoUrl} />
         </Box>
       </Stack>
       {termsOfService && (

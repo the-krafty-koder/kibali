@@ -72,14 +72,15 @@ const Dashboard = () => {
     (sum, tos) => sum + tos.totalFileSize,
     0
   );
-  console.log(totalStorageUsed);
 
   useEffect(() => {
-    if (backdrop === false) {
+    if (backdrop === false && organization === undefined) {
       fetchOrganization(credentials?.email!);
+    }
+    if (backdrop === false && organization !== undefined) {
       fetchTermsOfService();
     }
-  }, [backdrop]);
+  }, [backdrop, organization]);
 
   const handleUploadedFile = () => {
     const validation = UploadFileSchema.safeParse(uploadValues);

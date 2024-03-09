@@ -1,6 +1,9 @@
 import datetime
+from django.db import models
+
+from django.db.models import F, Func
+from core.helpers.format_name import format_name
 from pypdf import PdfReader
-from symbol import term
 from django.core.serializers import serialize
 from django.http import Http404
 from django.http.multipartparser import MultiPartParser
@@ -72,38 +75,39 @@ class TermsOfServiceAPIView(
 ):
     queryset = TermsOfService.objects.all()
     serializer_class = TermsOfServiceSerializer
-    permission_classes = (IsAuthenticated,)
 
-    def get_object(self, pk):
+    def get_object(self, slug):
         try:
-            return TermsOfService.objects.get(pk=pk)
+            return TermsOfService.objects.get(slug=slug)
         except TermsOfService.DoesNotExist:
             raise Http404
 
-    def put(self, request, pk, format=None):
-        termsOfService = self.get_object(pk)
+    def get(self, request, slug):
+        termsOfService = self.get_object(slug)
+        serializer = TermsOfServiceSerializer(instance=termsOfService)
 
+        if termsOfService:
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, slug, format=None):
+        termsOfService = self.get_object(slug)
         serializer = TermsOfServiceSerializer(termsOfService, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
-            tos = self.get_object(pk=pk)
-            tos_serializer = TermsOfServiceSerializer(instance=tos)
-
-            return Response(tos_serializer.data)
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
-        terms_of_service = TermsOfService.objects.get(id=pk)
-        ops = Operate(terms_of_service.organization.user.username)
+    def delete(self, request, slug):
+        termsOfService = self.get_object(slug)
+        # ops = Operate(termsOfService.organization.user.username)
         # deleted = ops.delete_file(
         #     terms_of_service.organization.bucket_name,
         #     terms_of_service.version_paths(),
         # )
-        terms_of_service.delete()
-        return Response(
-            {"terms_of_service": terms_of_service.id, "versions": []}
-        )
+        termsOfService.delete()
+        return Response({"terms_of_service": termsOfService.id, "versions": []})
 
 
 class OrganizationAPIView(APIView):

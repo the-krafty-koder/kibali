@@ -12,6 +12,7 @@ interface Store {
     Authorization: string;
   };
   termsOfServices: TermsOfService[];
+  setTermsOfServices: (termsOfServices: TermsOfService[]) => void;
   organization: Organization | undefined;
   fetchTermsOfService: () => void;
   fetchOrganization: (email: string) => void;
@@ -85,6 +86,9 @@ const useStore = create(
           const organization = await response.json();
           set({ organization });
         }
+      },
+      setTermsOfServices: (termsOfServices: TermsOfService[]) => {
+        set({ termsOfServices });
       },
     }),
     {

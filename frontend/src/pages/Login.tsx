@@ -23,6 +23,7 @@ const LoginSchema = z.object({
 });
 
 const Login = () => {
+  sessionStorage.removeItem("storeStorage");
   const [values, setValues] = useState({
     email: "",
     password: "",

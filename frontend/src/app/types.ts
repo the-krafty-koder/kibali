@@ -32,4 +32,5 @@ export type TermsOfService = {
   active?: boolean;
   totalFileSize: number;
   description: string;
+  slug: string;
 };

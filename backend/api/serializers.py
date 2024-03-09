@@ -126,6 +126,7 @@ class TermsOfServiceSerializer(serializers.ModelSerializer):
         write_only=True,
     )
     total_file_size = serializers.ReadOnlyField()
+    slug = serializers.ReadOnlyField()
 
     class Meta:
         fields = [
@@ -135,6 +136,7 @@ class TermsOfServiceSerializer(serializers.ModelSerializer):
             "id",
             "organization_id",
             "total_file_size",
+            "slug",
             "created_at",
             "description",
             "active",

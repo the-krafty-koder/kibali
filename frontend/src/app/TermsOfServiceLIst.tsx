@@ -3,22 +3,56 @@ import Sidebar from "../ui/Sidebar/Sidebar";
 import TosThumbnail from "../ui/TosThumbnail/TosThumbnail";
 import useStore from "../store/store";
 import { useShallow } from "zustand/react/shallow";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { TermsOfService } from "./types";
+import { useNavigate } from "react-router-dom";
 
 const TermsOfServiceList = () => {
-  const { termsOfServices, fetchOrganization, fetchTermsOfService } = useStore(
+  const {
+    termsOfServices,
+    fetchOrganization,
+    setTermsOfServices,
+    credentials,
+    organization,
+  } = useStore(
     useShallow((state) => ({
       organization: state.organization,
       termsOfServices: state.termsOfServices,
       fetchOrganization: state.fetchOrganization,
-      fetchTermsOfService: state.fetchTermsOfService,
+      setTermsOfServices: state.setTermsOfServices,
       credentials: state.credentials,
     }))
   );
+  const navigate = useNavigate();
+
+  const [deleted, setDeleted] = useState<boolean>(false);
+
+  const fetchTermsOfServices = async (
+    token: string,
+    organizationId: string
+  ): Promise<TermsOfService[]> => {
+    const endpoint = `${process.env.REACT_APP_API_ENDPOINT}/terms-of-service/${organizationId}`;
+    const response = await fetch(endpoint, {
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status === 200) {
+      const termsOfServices = await response.json();
+      setTermsOfServices(termsOfServices);
+      return termsOfServices;
+    }
+    return [];
+  };
 
   useEffect(() => {
-    fetchTermsOfService();
-  }, []);
+    if (deleted === false) {
+      fetchTermsOfServices(credentials?.token!, organization?.id!);
+      setDeleted(true);
+    }
+  }, [deleted]);
 
   return (
     <Sidebar>
@@ -28,11 +62,23 @@ const TermsOfServiceList = () => {
         {termsOfServices.length} Terms of Service{" "}
       </Typography>
       <Grid container spacing={5} marginTop={1}>
-        {termsOfServices.map((termsOfService) => (
+        {termsOfServices.map((termsOfService, index) => (
           <Grid item>
             <TosThumbnail
               termsOfService={termsOfService}
-              setTerms={fetchTermsOfService}
+              onDelete={async () => {
+                // const newTos = tos.filter(
+                //   (tos, ind) => tos.id !== termsOfService.id
+                // );
+                // console.log(newTos);
+                // setTos(newTos);
+
+                // const newTos = await fetchTermsOfServices(
+                //   credentials?.token!,
+                //   organization?.id!
+                // );
+                setDeleted(false);
+              }}
               link={`/app/terms-of-service/${termsOfService.id}`}
             />
           </Grid>

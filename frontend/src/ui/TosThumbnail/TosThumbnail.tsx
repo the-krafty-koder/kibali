@@ -25,9 +25,9 @@ import { useShallow } from "zustand/react/shallow";
 interface Props {
   termsOfService: TermsOfService;
   link: string;
-  setTerms: () => void;
+  onDelete: () => void;
 }
-const TosThumbnail = ({ termsOfService, link, setTerms }: Props) => {
+const TosThumbnail = ({ termsOfService, link, onDelete }: Props) => {
   const { credentials } = useStore(
     useShallow((state) => ({
       credentials: state.credentials,
@@ -62,7 +62,7 @@ const TosThumbnail = ({ termsOfService, link, setTerms }: Props) => {
   };
 
   const editTermsOfService = async () => {
-    const endpoint = `${process.env.REACT_APP_API_ENDPOINT}/terms-of-service/${termsOfService.id}`;
+    const endpoint = `${process.env.REACT_APP_API_ENDPOINT}/terms-of-service/${tos.slug}`;
     const response = await fetch(endpoint, {
       method: "PUT",
       headers: {
@@ -84,7 +84,7 @@ const TosThumbnail = ({ termsOfService, link, setTerms }: Props) => {
   };
 
   const deleteTermsOfService = async () => {
-    const endpoint = `${process.env.REACT_APP_API_ENDPOINT}/terms-of-service/${termsOfService.id}`;
+    const endpoint = `${process.env.REACT_APP_API_ENDPOINT}/terms-of-service/${tos.slug}`;
     const response = await fetch(endpoint, {
       method: "DELETE",
       headers: {
@@ -92,7 +92,7 @@ const TosThumbnail = ({ termsOfService, link, setTerms }: Props) => {
         "Content-Type": "application/json",
       },
     });
-    setTerms();
+    onDelete();
     setOpenDeleteModal(false);
   };
 
@@ -132,7 +132,9 @@ const TosThumbnail = ({ termsOfService, link, setTerms }: Props) => {
             onClose={() => setAnchorEl(null)}
           >
             <MenuItem onClick={handleEdit}>Edit</MenuItem>
-            <MenuItem onClick={handleDelete}>Delete</MenuItem>
+            <MenuItem onClick={handleDelete} disabled>
+              Delete
+            </MenuItem>
           </Menu>
           <Modal
             open={openEditModal}

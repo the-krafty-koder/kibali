@@ -2,6 +2,7 @@
 
 from email.policy import default
 from functools import reduce
+from random import randint, random
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AbstractUser, User
 from django.utils import timezone
@@ -48,7 +49,7 @@ class TermsOfServiceVersion(models.Model):
     file_size = models.IntegerField()
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ["-version_number"]
 
 
 class TermsOfServiceManager(models.Manager):
@@ -89,6 +90,7 @@ class TermsOfService(models.Model):
     organization = models.ForeignKey(
         Organization, on_delete=models.CASCADE, blank=False
     )
+    slug = models.CharField(blank=False, default="")
 
     objects = TermsOfServiceManager()
 
@@ -110,6 +112,10 @@ class TermsOfService(models.Model):
             return round(total_size / (1024 * 1024), 3)
 
         return 0
+
+    def save(self, *args, **kwargs):
+        self.slug = format_name(self.name)
+        super(TermsOfService, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ["-created_at"]

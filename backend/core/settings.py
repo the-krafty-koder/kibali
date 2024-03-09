@@ -37,7 +37,7 @@ ENVIRONMENT = env("ENVIRONMENT")
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "kibali.fly.dev",
+    "46.101.112.158",
     "api.heylilac.com",
 ]
 CSRF_TRUSTED_ORIGINS = [
@@ -98,7 +98,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = (
+DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": env("DB_NAME"),
@@ -107,7 +107,7 @@ DATABASES = (
         "HOST": env("DB_HOST"),
         "PORT": env("DB_PORT"),
     }
-)
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

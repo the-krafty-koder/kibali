@@ -28,7 +28,7 @@ urlpatterns = [
         "terms-of-service/<int:id>",
         TermsOfServiceListAPIView.as_view(),
     ),
-    path("terms-of-service/<int:pk>", TermsOfServiceAPIView.as_view()),
+    path("terms-of-service/<str:slug>", TermsOfServiceAPIView.as_view()),
     path("terms-of-service/<int:id>/upload", UploadTermsOfService.as_view()),
     path("organizations/<int:id>/upload-logo", UploadLogo.as_view()),
     # path(

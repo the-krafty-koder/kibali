@@ -44,7 +44,6 @@ export const chartOptions = {
 };
 
 export const chartSeries = (totalSize: number) => {
-  console.log(totalSize);
   if (totalSize == 0) {
     return [0];
   }
