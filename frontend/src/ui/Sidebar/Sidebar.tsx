@@ -165,7 +165,11 @@ const Sidebar = ({ children }: Props) => {
               marginLeft: "auto",
             }}
           >
-            <img src={organization?.logoUrl} />
+            {organization?.logoUrl ? (
+              <img src={organization?.logoUrl} />
+            ) : (
+              <AccountCircleIcon />
+            )}
           </Avatar>
         </Toolbar>
       </AppBar>

@@ -40,7 +40,7 @@ const DisplayTos = () => {
       termsOfService.name.toLowerCase().split(" ").join("-") ===
       termsOfServiceName
   );
-  const latestVersion = termsOfService?.versions.at(0);
+  const latestVersion = termsOfService?.versions.reverse().at(0);
 
   return (
     <div style={{ position: "relative" }}>
