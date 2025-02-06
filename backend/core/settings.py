@@ -37,7 +37,7 @@ ENVIRONMENT = env("ENVIRONMENT")
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "46.101.112.158",
+    "165.227.85.137",
     "api.heylilac.com",
 ]
 CSRF_TRUSTED_ORIGINS = [
