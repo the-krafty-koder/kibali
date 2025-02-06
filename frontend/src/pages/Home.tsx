@@ -3,7 +3,7 @@ import * as styles from "./Home.css";
 import { startButton as buttonStyle } from "./Navigation.css";
 import Navigation from "./Navigation";
 import Features from "./Features";
-import appScreenshot from "../assets/app_screenshot_2.png";
+import appScreenshot from "../assets/lilac_app.png";
 import line from "../assets/line.jpg";
 
 const Landing = () => {
