@@ -44,6 +44,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://kibali.fly.dev",
     "https://api.heylilac.com",
     "https://www.api.heylilac.com",
+    "https://app.heylilac.com",
 ]
 APPEND_SLASH = False
 
@@ -170,5 +171,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ORIGIN_WHITELIST = ["http://127.0.0.1:3000"]
+CORS_ALLOWED_ORIGINS = [
+    "https://app.heylilac.com",
+    "https://api.heylilac.com",
+]

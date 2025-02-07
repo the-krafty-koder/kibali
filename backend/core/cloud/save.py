@@ -1,4 +1,3 @@
-from distutils.command import upload
 from api.models import Organization, TermsOfService, TermsOfServiceVersion
 from api.serializers import TermsOfServiceSerializer
 from core.cloud.config import COS_S3_ENDPOINT
@@ -27,7 +26,6 @@ def save_terms_of_service(
         file=file,
         is_tos=True,
     )
-
     if uploaded:
         version = TermsOfServiceVersion.objects.create(
             version_number=version_number,
