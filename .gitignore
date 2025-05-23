@@ -1,3 +1,4 @@
 node_modules
 kibali
 frontend/node_modules/
+.DS_Store
